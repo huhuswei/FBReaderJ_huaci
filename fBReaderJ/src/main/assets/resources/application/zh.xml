@@ -160,6 +160,8 @@
 		<node name="addCatalog">
 			<node name="title" value="添加书库"/>
 			<node name="editUrl" value="手动输入URL"/>
+			<node name="scanLocalNetwork" value="扫描本地网络"/>
+			<node name="localIP" value="手动输入局域网IP"/>
 		</node>
 		<node name="manageCatalogs" value="管理书库">
 			<node name="summary" value="配置你的书库列表"/>
@@ -1191,10 +1193,6 @@
 		<node name="noArticle" value="No article found for “%s”" toBeTranslated="true"/>
 		<node name="cannotOpenDictionary" value="Cannot open dictionary" toBeTranslated="true"/>
 		<node name="noDictionarySelected" value="Dictionary not selected; please adjust Dictan settings" toBeTranslated="true"/>
-	</node>
-	<node name="premium" value="FBReader Premium Edition" toBeTranslated="true">
-		<node name="shortTitle" value="FBReader Premium" toBeTranslated="true"/>
-		<node name="conflict" value="Both FBReader and FBReader Premium appear to be installed. Which one would you like to run?" toBeTranslated="true"/>
 	</node>
 	<node name="widget">
 		<node name="simple">

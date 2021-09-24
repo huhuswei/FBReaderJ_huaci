@@ -448,7 +448,7 @@ public class ZLAndroidWidget extends MainView implements ZLViewWidget, View.OnLo
 		if (myPendingLongClickRunnable == null) {
 			myPendingLongClickRunnable = new LongClickRunnable();
 		}
-		postDelayed(myPendingLongClickRunnable, 2 * ViewConfiguration.getLongPressTimeout());
+		postDelayed(myPendingLongClickRunnable, 1 * ViewConfiguration.getLongPressTimeout());
 	}
 
 	private class ShortClickRunnable implements Runnable {

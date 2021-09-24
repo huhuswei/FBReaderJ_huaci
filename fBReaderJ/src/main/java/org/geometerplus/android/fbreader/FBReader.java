@@ -27,9 +27,11 @@ import android.content.*;
 import android.net.Uri;
 import android.text.Html;
 import android.os.*;
+import android.util.Log;
 import android.view.*;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yotadevices.fbreader.FBReaderYotaService;
 
@@ -41,6 +43,7 @@ import org.geometerplus.zlibrary.core.options.ZLIntegerOption;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.view.ZLViewWidget;
 
+import org.geometerplus.zlibrary.text.view.ZLTextFixedPosition;
 import org.geometerplus.zlibrary.text.view.ZLTextRegion;
 import org.geometerplus.zlibrary.text.view.ZLTextView;
 
@@ -103,7 +106,15 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 	volatile boolean IsPaused = false;
 	private volatile long myResumeTimestamp;
 	volatile Runnable OnResumeAction = null;
-
+	public String jump_intent_id = "";
+	public int jump_intent_position_char_end;
+	public int jump_intent_position_char_start;
+	public int jump_intent_position_element_end;
+	public int jump_intent_position_element_start;
+	public int jump_intent_position_paragraph_end;
+	public int jump_intent_position_paragraph_start;
+	public String jump_intent_type = "";
+	public boolean on_jump_intent = false;
 	private Intent myCancelIntent = null;
 	private Intent myOpenBookIntent = null;
 
@@ -145,6 +156,9 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 
 		myBook = FBReaderIntents.getBookExtra(intent, myFBReaderApp.Collection);
 		final Bookmark bookmark = FBReaderIntents.getBookmarkExtra(intent);
+		if (myBook == null && intent.getAction().equals("android.intent.action.SEND")) {
+			parseJumpIntent(intent);
+		}
 		if (myBook == null) {
 			final Uri data = intent.getData();
 			if (data != null) {
@@ -165,17 +179,33 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		}
 		Config.Instance().runOnConnect(new Runnable() {
 			public void run() {
-				myFBReaderApp.openBook(myBook, bookmark, new Runnable() {
-					public void run() {
-						if (action != null) {
-							action.run();
+				if (!FBReader.this.on_jump_intent) {
+//					myFBReaderApp.openBook(myBook, bookmark, new Runnable() {
+//						public void run() {
+//							if (action != null) {
+//								action.run();
+//							}
+//							hideBars();
+//							if (DeviceType.Instance() == DeviceType.YOTA_PHONE) {
+//								refreshYotaScreen();
+//							}
+//						}
+//					}, myNotifier);
+					FBReader.this.myFBReaderApp.openBook(FBReader.this.myBook, bookmark, action, FBReader.this.myNotifier);
+				} else if (FBReader.this.myBook == null || FBReader.this.myFBReaderApp == null || FBReader.this.myFBReaderApp.Model == null || FBReader.this.myFBReaderApp.Model.Book == null || !FBReader.this.myFBReaderApp.Collection.sameBook(FBReader.this.myBook, FBReader.this.myFBReaderApp.Model.Book)) {
+					FBReader.this.myFBReaderApp.openBook(FBReader.this.myBook, bookmark, new Runnable() {
+						public void run() {
+							FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, 0, 0);
+							FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
+							FBReader.this.myFBReaderApp.getViewWidget().repaint();
+							Log.d("jump_intent", "jump");
 						}
-						hideBars();
-						if (DeviceType.Instance() == DeviceType.YOTA_PHONE) {
-							refreshYotaScreen();
-						}
-					}
-				}, myNotifier);
+					}, FBReader.this.myNotifier);
+				} else {
+					FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
+					FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
+					FBReader.this.myFBReaderApp.getViewWidget().repaint();
+				}
 				AndroidFontUtil.clearFontCache();
 			}
 		});
@@ -338,7 +368,23 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 
 		Config.Instance().runOnConnect(new Runnable() {
 			public void run() {
-				showPremiumDialog();
+				if (FBReader.this.on_jump_intent && FBReader.this.myBook != null) {
+					if (FBReader.this.myFBReaderApp.Collection.sameBook(FBReader.this.myBook, FBReader.this.myFBReaderApp.Model.Book)) {
+						FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
+						FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
+						FBReader.this.myFBReaderApp.getViewWidget().repaint();
+					} else {
+						FBReader.this.myFBReaderApp.openBook(FBReader.this.myBook, null, new Runnable() {
+							public void run() {
+								FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
+								FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
+								FBReader.this.myFBReaderApp.getViewWidget().repaint();
+								Log.d("jump_intent", "jump");
+							}
+						}, FBReader.this.myNotifier);
+					}
+				}
+				AndroidFontUtil.clearFontCache();
 			}
 		});
 
@@ -367,7 +413,30 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		final String action = intent.getAction();
 		final Uri data = intent.getData();
 
-		if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) {
+		if (intent.getAction().equals("android.intent.action.SEND")) {
+			parseJumpIntent(intent);
+			Config.Instance().runOnConnect(new Runnable() {
+				public void run() {
+					if (FBReader.this.on_jump_intent && FBReader.this.myBook != null) {
+						if (FBReader.this.myFBReaderApp.Collection.sameBook(FBReader.this.myBook, FBReader.this.myFBReaderApp.Model.Book)) {
+							FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
+							FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
+							FBReader.this.myFBReaderApp.getViewWidget().repaint();
+						} else {
+							FBReader.this.myFBReaderApp.openBook(FBReader.this.myBook, null, new Runnable() {
+								public void run() {
+									FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
+									FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
+									FBReader.this.myFBReaderApp.getViewWidget().repaint();
+									Log.d("jump_intent", "jump");
+								}
+							}, FBReader.this.myNotifier);
+						}
+					}
+					AndroidFontUtil.clearFontCache();
+				}
+			});
+		} else if ((intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) {
 			super.onNewIntent(intent);
 		} else if (Intent.ACTION_VIEW.equals(action)
 				   && data != null && "fbreader-action".equals(data.getScheme())) {
@@ -540,7 +609,9 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 	@Override
 	protected void onResume() {
 		super.onResume();
-
+		if (this.on_jump_intent) {
+			showJumpToast();
+		}
 		myStartTimer = true;
 		Config.Instance().runOnConnect(new Runnable() {
 			public void run() {
@@ -623,6 +694,37 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		hideBars();
 
 		ApiServerImplementation.sendEvent(this, ApiListener.EVENT_READ_MODE_OPENED);
+	}
+
+	private void parseJumpIntent(Intent intent) {
+		this.on_jump_intent = true;
+		this.myFBReaderApp.setOnJumpIntent(true);
+		showJumpToast();
+		String type = intent.getStringExtra("TYPE");
+		String id = intent.getStringExtra("ID");
+		try {
+			String stringExtra = intent.getStringExtra("POSITION");
+			if (stringExtra != null) {
+				String[] split = stringExtra.split("@");
+				if (split.length >= 6) {
+					this.jump_intent_position_paragraph_start = Integer.parseInt(split[0]);
+					this.jump_intent_position_element_start = Integer.parseInt(split[1]);
+					this.jump_intent_position_char_start = Integer.parseInt(split[2]);
+					this.jump_intent_position_paragraph_end = Integer.parseInt(split[3]);
+					this.jump_intent_position_element_end = Integer.parseInt(split[4]);
+					this.jump_intent_position_char_end = Integer.parseInt(split[5]);
+				}
+			}
+		} catch (NumberFormatException e) {
+		}
+		if (id != null && type != null) {
+			this.jump_intent_id = id;
+			this.jump_intent_type = type;
+			this.myBook = getCollection().getBookByUid(new UID(type, id));
+			if (this.myBook == null) {
+				Toast.makeText(this, "未找到目标书籍，请重新导入电子书文件！", Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 
 	@Override
@@ -1014,7 +1116,9 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 	private void setBatteryLevel(int percent) {
 		myBatteryLevel = percent;
 	}
-
+	private void showJumpToast() {
+		Toast.makeText(this, "处于回链模式，不保存浏览进度，重启后恢复正常。",Toast.LENGTH_SHORT).show();
+	}
 	@Override
 	public void close() {
 		finish();
@@ -1140,120 +1244,6 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		myFBReaderApp.getTextView().removeHighlightings(DictionaryHighlighting.class);
 		myFBReaderApp.getViewWidget().reset();
 		myFBReaderApp.getViewWidget().repaint();
-	}
-
-	private boolean resolveVersionConflict() {
-		final Intent intent = getIntent();
-		if (intent == null) {
-			return false;
-		}
-
-		final Intent premiumIntent = new Intent().setComponent(new ComponentName(
-			"com.fbreader",
-			"com.fbreader.android.fbreader.FBReader"
-		));
-		if (!PackageUtil.canBeStarted(this, premiumIntent, false)) {
-			return false;
-		}
-
-		if (!intent.hasCategory(Intent.CATEGORY_LAUNCHER)) {
-			return true;
-		}
-
-		final ZLResource resource = ZLResource.resource("premium");
-		final AlertDialog.Builder builder = new AlertDialog.Builder(this)
-			.setMessage(resource.getResource("conflict").getValue())
-			.setIcon(0)
-			.setPositiveButton(
-				resource.getResource("shortTitle").getValue(),
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						startActivity(premiumIntent);
-						finish();
-					}
-				}
-			)
-			.setNegativeButton(getResources().getString(R.string.app_name), null);
-		ensureFullscreenOnDismiss(builder);
-		builder.create().show();
-		return true;
-	}
-
-	private void showPremiumDialog() {
-		if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			return;
-		}
-
-		if (resolveVersionConflict()) {
-			return;
-		}
-
-		final int currentTime = (int)(System.currentTimeMillis() / 1000 / 60 / 60);
-		final ZLIntegerOption lastCallOption = new ZLIntegerOption("Premium", "LastCall", 0);
-		final int lastCall = lastCallOption.getValue();
-		if (lastCall == 0) {
-			lastCallOption.setValue(currentTime - 10 * 24);
-			return;
-		}
-		final ZLIntegerOption countOption = new ZLIntegerOption("Premium", "Count", 0);
-		final int count = countOption.getValue();
-		if (count < 5) {
-			countOption.setValue(count + 1);
-			return;
-		}
-		if (lastCall + 15 * 24 > currentTime) {
-			return;
-		}
-
-		if (isFinishing()) {
-			return;
-		}
-
-		countOption.setValue(0);
-		lastCallOption.setValue(currentTime);
-
-		ZLFile textFile =
-			ZLFile.createFileByPath("data/premium/" + ZLResource.getLanguage() + ".html");
-		if (!textFile.exists()) {
-			textFile = ZLFile.createFileByPath("data/premium/en.html");
-		}
-		final StringBuilder buffer = new StringBuilder();
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(textFile.getInputStream(), "utf-8"));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				buffer.append(line);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		} finally {
-			try {
-				reader.close();
-			} catch (Exception e) {
-				// ignore
-			}
-		}
-		final ZLResource buttonResource = ZLResource.resource("dialog").getResource("button");
-		final AlertDialog.Builder builder = new AlertDialog.Builder(this)
-			.setTitle(ZLResource.resource("premium").getValue())
-			.setMessage(Html.fromHtml(buffer.toString()))
-			.setIcon(0)
-			.setPositiveButton(
-				buttonResource.getResource("buy").getValue(),
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						startActivity(new Intent(
-							Intent.ACTION_VIEW,
-							Uri.parse("market://details?id=com.fbreader")
-						));
-					}
-				}
-			)
-			.setNegativeButton(buttonResource.getResource("noThanks").getValue(), null);
-		ensureFullscreenOnDismiss(builder);
-		builder.create().show();
 	}
 
 	void ensureFullscreenOnDismiss(AlertDialog.Builder builder) {
