@@ -52,7 +52,9 @@ public final class FBReaderApp extends ZLApplication {
 	public void setExternalFileOpener(ExternalFileOpener o) {
 		myExternalFileOpener = o;
 	}
-
+	public void setOnJumpIntent(boolean z) {
+		this.onJumpIntent = z;
+	}
 	public final MiscOptions MiscOptions = new MiscOptions();
 	public final ImageOptions ImageOptions = new ImageOptions();
 	public final ViewOptions ViewOptions = new ViewOptions();
@@ -74,6 +76,7 @@ public final class FBReaderApp extends ZLApplication {
 	public final IBookCollection<Book> Collection;
 
 	private SyncData mySyncData = new SyncData();
+	private boolean onJumpIntent = false;
 
 	public FBReaderApp(SystemInfo systemInfo, final IBookCollection<Book> collection) {
 		super(systemInfo);
@@ -559,12 +562,14 @@ public final class FBReaderApp extends ZLApplication {
 	}
 
 	public void storePosition() {
-		final Book bk = Model != null ? Model.Book : null;
-		if (bk != null && bk == myStoredPositionBook && myStoredPosition != null && BookTextView != null) {
-			final ZLTextPosition position = new ZLTextFixedPosition(BookTextView.getStartCursor());
-			if (!myStoredPosition.equals(position)) {
-				myStoredPosition = position;
-				savePosition();
+		if (!this.onJumpIntent) {
+			final Book bk = Model != null ? Model.Book : null;
+			if (bk != null && bk == myStoredPositionBook && myStoredPosition != null && BookTextView != null) {
+				final ZLTextPosition position = new ZLTextFixedPosition(BookTextView.getStartCursor());
+				if (!myStoredPosition.equals(position)) {
+					myStoredPosition = position;
+					savePosition();
+				}
 			}
 		}
 	}

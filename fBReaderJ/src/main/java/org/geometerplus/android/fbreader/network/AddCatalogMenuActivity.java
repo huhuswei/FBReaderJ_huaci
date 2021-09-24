@@ -29,13 +29,16 @@ import org.geometerplus.fbreader.network.NetworkLibrary;
 
 import org.geometerplus.android.fbreader.api.FBReaderIntents;
 import org.geometerplus.android.fbreader.api.PluginApi;
+import org.geometerplus.zlibrary.ui.android.R;
 
 public class AddCatalogMenuActivity extends MenuActivity {
 	private final ZLResource myResource = NetworkLibrary.resource().getResource("addCatalog");
 
 	private void addItem(String id, int weight) {
+		final String baseUrl = "http://data.fbreader.org/add_catalog/";
+
 		myInfos.add(new PluginApi.MenuActionInfo(
-			Uri.parse("http://data.fbreader.org/add_catalog/" + id),
+			Uri.parse(baseUrl + id),
 			myResource.getResource(id).getValue(),
 			weight
 		));
@@ -45,7 +48,8 @@ public class AddCatalogMenuActivity extends MenuActivity {
 	protected void init() {
 		setTitle(myResource.getResource("title").getValue());
 		addItem("editUrl", 1);
-		//addItem("scanLocalNetwork", 2);
+		addItem("scanLocalNetwork", 2);
+		addItem("localIP", 3);
 	}
 
 	@Override

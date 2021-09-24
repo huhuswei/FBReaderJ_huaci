@@ -1,15 +1,16 @@
 apply plugin: 'com.android.library'
 
 android {
-	lintOptions {
-	      abortOnError false  
-	}
 
-	compileSdkVersion 25
+	compileSdk 33
 	buildToolsVersion "30.0.3"
 
 	defaultConfig {
-		minSdkVersion 11
-		targetSdkVersion 25
+		minSdkVersion 23
+		targetSdkVersion 33
+	}
+	namespace 'com.github.johnpersano.supertoasts'
+	lint {
+		abortOnError false
 	}
 }

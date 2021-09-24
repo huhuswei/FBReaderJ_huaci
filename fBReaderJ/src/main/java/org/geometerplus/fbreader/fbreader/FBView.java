@@ -759,7 +759,9 @@ public final class FBView extends ZLTextView {
 	@Override
 	protected void releaseSelectionCursor() {
 		super.releaseSelectionCursor();
-		if (getCountOfSelectedWords() > 0) {
+		if (getCountOfSelectedWords() == 1) {
+			myReader.runAction(ActionCode.SELECTION_TRANSLATE);
+		} else {
 			myReader.runAction(ActionCode.SELECTION_SHOW_PANEL);
 		}
 	}

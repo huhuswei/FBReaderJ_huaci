@@ -209,6 +209,6 @@ class DisplayBookPopupAction extends FBAndroidAction {
 			}
 		});
 
-		popup.showAtLocation(BaseActivity.getCurrentFocus(), Gravity.CENTER, 0, 0);
+		popup.showAtLocation(((View) BaseActivity.getViewWidget()).getRootView(), Gravity.CENTER, 0, 0);
 	}
 }
