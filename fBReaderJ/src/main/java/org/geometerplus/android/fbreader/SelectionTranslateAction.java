@@ -119,21 +119,24 @@ public class SelectionTranslateAction extends FBAndroidAction {
 			element = cur.getElement();
 			if (element instanceof ZLTextWord) {
 				word = ((ZLTextWord) element).getString();
+
+				LanguageInfo info = EnhancedLanguageDetector.detectLanguage(word);
 				if (word.matches(".*[.?;!。？；！]")) {
-//					sb.append(" ");
+					if(info.needsSpaces()) {
+						sb.append(" ");
+					}
 					sb.append(word);
 					break;
 				}
-				LanguageInfo info = EnhancedLanguageDetector.detectLanguage(word);
 				if(info.needsSpaces()) {
 					sb.append(" ");
 				}
 				sb.append(word);
 			}
 		}
-		String stringBuilder = sb.toString();
+		String stringBuilder = sb.toString().replaceAll("[\r\n]+", "");
 		String str = "";
-		String replaceAll = this.Reader.getTextView().getSelectedSnippet().getText().toString().replaceAll("[?!.,;\"？！。，；“”‘’《》「」【】]", "").replaceAll("'s$", "").replaceAll("'$", "");; //targetEle.toString().replaceAll("[?!.,;\"]", "").replaceAll("'s$", "").replaceAll("'$", "");
+		String replaceAll = this.Reader.getTextView().getSelectedSnippet().getText().replaceAll("(^[\\p{P}\\p{S}]+)|([\\p{P}\\p{S}]+$)", "").replaceAll("[\r\n]+", " "); //targetEle.toString().replaceAll("[?!.,;\"]", "").replaceAll("'s$", "").replaceAll("'$", "");
 		intent = new Intent();
 		if (isAnkiHelper) {
 			intent.setClassName("com.mmjang.ankihelper", "com.mmjang.ankihelper.ui.popup.PopupActivity");
