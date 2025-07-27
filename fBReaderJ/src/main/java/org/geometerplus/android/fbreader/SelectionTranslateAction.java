@@ -24,6 +24,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import java.util.List;
 
+import org.geometerplus.android.fbreader.util.EnhancedLanguageDetector;
+import org.geometerplus.android.fbreader.util.EnhancedLanguageDetector.*;
 import org.geometerplus.fbreader.fbreader.*;
 import org.geometerplus.android.fbreader.dict.DictionaryUtil;
 import org.geometerplus.fbreader.book.UID;
@@ -69,7 +71,7 @@ public class SelectionTranslateAction extends FBAndroidAction {
 		String title = this.Reader.getCurrentBook().getTitle();
 		String noteHtml = "from <i>" + title + "</i> - " + (Math.round(100.0f * this.Reader.getCurrentBook().getProgress().toFloat()) + "%") + "<br/><a id='fb_source' href='" + getJumpIntentString(this.Reader) + "'>jump to source</a>";
 		Intent intent;
-		if (this.Reader.getTextView().getCountOfSelectedWords() > 2) {
+		if (this.Reader.getTextView().getCountOfSelectedWords() > 4) {
 			String text = this.Reader.getTextView().getSelectedSnippet().getText();
 			intent = new Intent();
 			if (isAnkiHelper) {
@@ -101,10 +103,13 @@ public class SelectionTranslateAction extends FBAndroidAction {
 			element = cur.getElement();
 			if (element instanceof ZLTextWord) {
 				word = ((ZLTextWord) element).getString();
-				if (word.matches(".*[.?;!]")) {
+				if (word.matches(".*[.?;!。？；！]")) {
 					break;
 				}
-				sb.insert(0, " ");
+				LanguageInfo info = EnhancedLanguageDetector.detectLanguage(word);
+				if(info.needsSpaces()) {
+					sb.insert(0, " ");
+				}
 				sb.insert(0, word);
 			}
 		}
@@ -114,18 +119,21 @@ public class SelectionTranslateAction extends FBAndroidAction {
 			element = cur.getElement();
 			if (element instanceof ZLTextWord) {
 				word = ((ZLTextWord) element).getString();
-				if (word.matches(".*[.?;!]")) {
-					sb.append(" ");
+				if (word.matches(".*[.?;!。？；！]")) {
+//					sb.append(" ");
 					sb.append(word);
 					break;
 				}
-				sb.append(" ");
+				LanguageInfo info = EnhancedLanguageDetector.detectLanguage(word);
+				if(info.needsSpaces()) {
+					sb.append(" ");
+				}
 				sb.append(word);
 			}
 		}
 		String stringBuilder = sb.toString();
 		String str = "";
-		String replaceAll = targetEle.toString().replaceAll("[?!.,;\"]", "").replaceAll("'s$", "").replaceAll("'$", "");
+		String replaceAll = this.Reader.getTextView().getSelectedSnippet().getText().toString().replaceAll("[?!.,;\"？！。，；“”‘’《》「」【】]", "").replaceAll("'s$", "").replaceAll("'$", "");; //targetEle.toString().replaceAll("[?!.,;\"]", "").replaceAll("'s$", "").replaceAll("'$", "");
 		intent = new Intent();
 		if (isAnkiHelper) {
 			intent.setClassName("com.mmjang.ankihelper", "com.mmjang.ankihelper.ui.popup.PopupActivity");

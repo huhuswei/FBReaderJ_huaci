@@ -15,8 +15,8 @@ android {
             //设置支持的CPU架构
 //            abiFilters "arm64-v8a","armeabi-v7a", "x86", "x86_64"
         }
-        versionCode 20241128
-        versionName '2.5.12划词版'
+        versionCode 20250727
+        versionName '2.6.0划词版'
     }
     splits {
         abi {
