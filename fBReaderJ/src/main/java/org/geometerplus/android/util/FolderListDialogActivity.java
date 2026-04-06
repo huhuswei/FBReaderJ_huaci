@@ -30,6 +30,7 @@ import android.widget.*;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public class FolderListDialogActivity extends ListActivity {
 	interface Key {
@@ -46,6 +47,11 @@ public class FolderListDialogActivity extends ListActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.folder_list_dialog);
 
@@ -104,8 +110,17 @@ public class FolderListDialogActivity extends ListActivity {
 	private void showItemRemoveDialog(final int index) {
 		final ZLResource resource = myResource.getResource("removeDialog");
 		final ZLResource buttonResource = ZLResource.resource("dialog").getResource("button");
-		new AlertDialog.Builder(FolderListDialogActivity.this)
-			.setCancelable(false)
+
+		// 检查水墨屏主题
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		final AlertDialog.Builder builder;
+		if (zlibrary.InkThemeOption.getValue()) {
+			builder = new AlertDialog.Builder(this, R.style.FBReader_Dialog_Ink);
+		} else {
+			builder = new AlertDialog.Builder(this);
+		}
+
+		builder.setCancelable(false)
 			.setTitle(resource.getValue())
 			.setMessage(resource.getResource("message").getValue().replace("%s", myFolderList.get(index)))
 			.setPositiveButton(buttonResource.getResource("yes").getValue(), new DialogInterface.OnClickListener() {

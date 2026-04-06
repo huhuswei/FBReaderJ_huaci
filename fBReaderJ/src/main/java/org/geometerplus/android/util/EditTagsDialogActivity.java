@@ -33,6 +33,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public class EditTagsDialogActivity extends EditListDialogActivity {
 	public static final int REQ_CODE = 001;
@@ -43,6 +44,11 @@ public class EditTagsDialogActivity extends EditListDialogActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Dialog_Ink);
+		}
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.edit_tags_dialog);
 

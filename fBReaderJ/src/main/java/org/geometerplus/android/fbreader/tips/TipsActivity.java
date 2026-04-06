@@ -31,6 +31,7 @@ import org.geometerplus.zlibrary.ui.android.R;
 
 import org.geometerplus.fbreader.Paths;
 import org.geometerplus.fbreader.tips.*;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public class TipsActivity extends Activity {
 	public static final String INITIALIZE_ACTION = "android.fbreader.action.tips.INITIALIZE";
@@ -40,6 +41,11 @@ public class TipsActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Dialog_Ink);
+		}
+
 		super.onCreate(icicle);
 
  		myManager = new TipsManager(Paths.systemInfo(this));

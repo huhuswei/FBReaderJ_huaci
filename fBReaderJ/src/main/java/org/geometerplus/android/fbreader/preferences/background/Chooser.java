@@ -23,6 +23,7 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,6 +32,7 @@ import yuku.ambilwarna.AmbilWarnaDialog;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 import org.geometerplus.zlibrary.ui.android.util.ZLAndroidColorUtil;
 
 import org.geometerplus.fbreader.Paths;
@@ -39,6 +41,16 @@ import org.geometerplus.android.util.FileChooserUtil;
 
 public class Chooser extends ListActivity implements AdapterView.OnItemClickListener {
 	private final ZLResource myResource = ZLResource.resource("Preferences").getResource("colors").getResource("background");
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
+		super.onCreate(savedInstanceState);
+	}
 
 	@Override
 	protected void onStart() {

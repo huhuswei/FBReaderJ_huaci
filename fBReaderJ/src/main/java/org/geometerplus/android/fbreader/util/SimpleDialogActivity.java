@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public abstract class SimpleDialogActivity extends Activity {
 	private TextView myTextView;
@@ -38,6 +39,11 @@ public abstract class SimpleDialogActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle bundle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Dialog_Ink);
+		}
+
 		super.onCreate(bundle);
 		myTextView = null;
 		myButtonsView = null;

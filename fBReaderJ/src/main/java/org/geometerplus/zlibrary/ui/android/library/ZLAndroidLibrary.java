@@ -47,16 +47,18 @@ public final class ZLAndroidLibrary extends ZLibrary {
 	public final ZLBooleanOption ShowActionBarOption = new ZLBooleanOption("LookNFeel", "ShowActionBarNew", false);
 	public final ZLBooleanOption EnableFullscreenModeOption = new ZLBooleanOption("LookNFeel", "FullscreenMode", true);
 	public final ZLBooleanOption DisableButtonLightsOption = new ZLBooleanOption("LookNFeel", "DisableButtonLights", !DeviceType.Instance().hasButtonLightsBug());
+	public final ZLBooleanOption InkThemeOption = new ZLBooleanOption("LookNFeel", "InkTheme", false);
+	public final ZLIntegerRangeOption BatteryLevelToTurnScreenOffOption = new ZLIntegerRangeOption("LookNFeel", "BatteryLevelToTurnScreenOff", 0, 100, 50);
+	public final ZLBooleanOption DontTurnScreenOffDuringChargingOption = new ZLBooleanOption("LookNFeel", "DontTurnScreenOffDuringCharging", true);
+	public final ZLIntegerRangeOption ScreenBrightnessLevelOption = new ZLIntegerRangeOption("LookNFeel", "ScreenBrightnessLevel", 0, 100, 0);
 	{
 		ShowStatusBarOption.setSpecialName("statusBar");
 		OldShowActionBarOption.setSpecialName("actionBar");
 		ShowActionBarOption.setSpecialName("actionBarNew");
 		EnableFullscreenModeOption.setSpecialName("enableFullscreen");
 		DisableButtonLightsOption.setSpecialName("disableButtonLights");
+		InkThemeOption.setSpecialName("inkTheme");
 	}
-	public final ZLIntegerRangeOption BatteryLevelToTurnScreenOffOption = new ZLIntegerRangeOption("LookNFeel", "BatteryLevelToTurnScreenOff", 0, 100, 50);
-	public final ZLBooleanOption DontTurnScreenOffDuringChargingOption = new ZLBooleanOption("LookNFeel", "DontTurnScreenOffDuringCharging", true);
-	public final ZLIntegerRangeOption ScreenBrightnessLevelOption = new ZLIntegerRangeOption("LookNFeel", "ScreenBrightnessLevel", 0, 100, 0);
 
 	private final Application myApplication;
 

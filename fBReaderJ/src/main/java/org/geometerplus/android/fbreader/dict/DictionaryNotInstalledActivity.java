@@ -28,6 +28,7 @@ import android.widget.*;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 import org.geometerplus.android.util.UIMessageUtil;
 import org.geometerplus.android.util.PackageUtil;
 
@@ -41,6 +42,11 @@ public class DictionaryNotInstalledActivity extends ListActivity {
 
 	@Override
 	protected void onCreate(Bundle saved) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(saved);
 		myResource = ZLResource.resource("dialog").getResource("missingDictionary");
 		myDictionaryName = getIntent().getStringExtra(DICTIONARY_NAME_KEY);

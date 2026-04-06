@@ -417,6 +417,10 @@
 				<node name="summaryOn" value="Disable button lights (most devices)"/>
 				<node name="summaryOff" value="Don't disable button lights"/>
 			</node>
+			<node name="inkTheme" value="Ink screen theme (B&amp;W)">
+				<node name="summaryOn" value="Apply black and white theme for e-ink displays"/>
+				<node name="summaryOff" value="Use normal theme"/>
+			</node>
 			<node name="twoColumnView" value="Two column view">
 				<node name="summaryOn" value="Display text in two columns when viewed horizontally"/>
 				<node name="summaryOff" value="Always display text in one column"/>

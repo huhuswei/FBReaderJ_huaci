@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.fbreader.fbreader.ActionCode;
 import org.geometerplus.fbreader.fbreader.FBReaderApp;
@@ -51,7 +52,12 @@ final class TextSearchPopup extends PopupPanel implements View.OnClickListener {
 			return;
 		}
 
-		activity.getLayoutInflater().inflate(R.layout.search_panel, root);
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			activity.getLayoutInflater().inflate(R.layout.search_panel_ink, root);
+		} else {
+			activity.getLayoutInflater().inflate(R.layout.search_panel, root);
+		}
 		myWindow = (SimplePopupWindow)root.findViewById(R.id.search_panel);
 
 		setupButton(R.id.search_panel_previous);

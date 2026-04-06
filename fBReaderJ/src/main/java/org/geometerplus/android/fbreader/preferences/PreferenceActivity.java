@@ -22,6 +22,8 @@ package org.geometerplus.android.fbreader.preferences;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -299,6 +301,11 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 			appearanceScreen.addOption(androidLibrary.EnableFullscreenModeOption, "fullscreenMode");
 		}
 		appearanceScreen.addOption(androidLibrary.DisableButtonLightsOption, "disableButtonLights");
+
+		final ZLResource inkThemeResource = appearanceScreen.Resource.getResource("inkTheme");
+		appearanceScreen.addPreference(new ZLBooleanPreference(
+			this, androidLibrary.InkThemeOption, inkThemeResource
+		));
 
 		if (DeviceType.Instance().isEInk()) {
 			final EInkOptions einkOptions = new EInkOptions();

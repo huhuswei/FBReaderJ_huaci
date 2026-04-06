@@ -29,6 +29,8 @@ import android.preference.*;
 import org.geometerplus.zlibrary.core.options.*;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 import org.geometerplus.zlibrary.ui.android.network.SQLiteCookieDatabase;
 
 import org.geometerplus.android.fbreader.OrientationUtil;
@@ -131,6 +133,11 @@ abstract class ZLPreferenceActivity extends android.preference.PreferenceActivit
 
 	@Override
 	protected void onCreate(Bundle bundle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary != null && zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(bundle);
 
 		Thread.setDefaultUncaughtExceptionHandler(new org.geometerplus.zlibrary.ui.android.library.UncaughtExceptionHandler(this));

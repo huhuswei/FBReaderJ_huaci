@@ -34,6 +34,8 @@ import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.util.MimeType;
 import org.geometerplus.zlibrary.core.util.ZLBoolean3;
 
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 import org.geometerplus.zlibrary.ui.android.network.SQLiteCookieDatabase;
 
 import org.geometerplus.fbreader.network.*;
@@ -71,6 +73,11 @@ public abstract class NetworkLibraryActivity extends TreeActivity<NetworkTree> i
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(icicle);
 		BookCollection.bindToService(this, new Runnable() {
 			public void run() {
@@ -471,8 +478,17 @@ public abstract class NetworkLibraryActivity extends TreeActivity<NetworkTree> i
 		final ZLResource dialogResource = ZLResource.resource("dialog");
 		final ZLResource boxResource = dialogResource.getResource("networkError");
 		final ZLResource buttonResource = dialogResource.getResource("button");
-		new AlertDialog.Builder(this)
-			.setTitle(boxResource.getResource("title").getValue())
+
+		// 检查水墨屏主题
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		final AlertDialog.Builder builder;
+		if (zlibrary.InkThemeOption.getValue()) {
+			builder = new AlertDialog.Builder(this, R.style.FBReader_Dialog_Ink);
+		} else {
+			builder = new AlertDialog.Builder(this);
+		}
+
+		builder.setTitle(boxResource.getResource("title").getValue())
 			.setMessage(error)
 			.setIcon(0)
 			.setPositiveButton(buttonResource.getResource("tryAgain").getValue(), listener)

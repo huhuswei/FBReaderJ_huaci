@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.*;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.zlibrary.text.view.ZLTextView;
 import org.geometerplus.zlibrary.text.view.ZLTextWordCursor;
@@ -74,7 +75,13 @@ final class NavigationPopup {
 			return;
 		}
 
-		activity.getLayoutInflater().inflate(R.layout.navigation_panel, root);
+		final ZLAndroidLibrary zlibrary = activity.getZLibrary();
+		final boolean inkTheme = zlibrary.InkThemeOption.getValue();
+		if (inkTheme) {
+			activity.getLayoutInflater().inflate(R.layout.navigation_panel_ink, root);
+		} else {
+			activity.getLayoutInflater().inflate(R.layout.navigation_panel, root);
+		}
 		myWindow = (NavigationWindow)root.findViewById(R.id.navigation_panel);
 
 		final SeekBar slider = (SeekBar)myWindow.findViewById(R.id.navigation_slider);

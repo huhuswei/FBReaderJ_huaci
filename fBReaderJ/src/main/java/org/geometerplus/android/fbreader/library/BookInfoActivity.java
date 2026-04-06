@@ -43,6 +43,7 @@ import org.geometerplus.zlibrary.core.language.ZLLanguageUtil;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 import org.geometerplus.zlibrary.ui.android.image.ZLAndroidImageData;
 import org.geometerplus.zlibrary.ui.android.image.ZLAndroidImageManager;
 
@@ -73,6 +74,11 @@ public class BookInfoActivity extends Activity implements MenuItem.OnMenuItemCli
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(icicle);
 		Thread.setDefaultUncaughtExceptionHandler(
 			new org.geometerplus.zlibrary.ui.android.library.UncaughtExceptionHandler(this)

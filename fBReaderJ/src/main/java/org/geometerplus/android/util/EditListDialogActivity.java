@@ -34,6 +34,7 @@ import android.content.DialogInterface.OnClickListener;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public abstract class EditListDialogActivity extends ListActivity {
 	public static final int REQ_CODE = 001;
@@ -49,6 +50,11 @@ public abstract class EditListDialogActivity extends ListActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Dialog_Ink);
+		}
+
 		super.onCreate(savedInstanceState);
 
 		final Intent intent = getIntent();

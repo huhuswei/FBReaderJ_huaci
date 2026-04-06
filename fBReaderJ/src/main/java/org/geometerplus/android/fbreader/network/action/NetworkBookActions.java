@@ -31,6 +31,7 @@ import android.content.DialogInterface;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.android.fbreader.FBReader;
 
@@ -227,8 +228,17 @@ public abstract class NetworkBookActions {
 		final ZLResource dialogResource = ZLResource.resource("dialog");
 		final ZLResource buttonResource = dialogResource.getResource("button");
 		final ZLResource boxResource = dialogResource.getResource("deleteBookBox");
-		new AlertDialog.Builder(activity)
-			.setTitle(book.Title)
+
+		// 检查水墨屏主题
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		final AlertDialog.Builder builder;
+		if (zlibrary.InkThemeOption.getValue()) {
+			builder = new AlertDialog.Builder(activity, R.style.FBReader_Dialog_Ink);
+		} else {
+			builder = new AlertDialog.Builder(activity);
+		}
+
+		builder.setTitle(book.Title)
 			.setMessage(boxResource.getResource("message").getValue())
 			.setIcon(0)
 			.setPositiveButton(buttonResource.getResource("yes").getValue(), new DialogInterface.OnClickListener() {

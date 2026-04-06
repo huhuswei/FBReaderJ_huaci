@@ -36,6 +36,7 @@ import org.geometerplus.android.fbreader.covers.CoverManager;
 
 import org.geometerplus.android.util.ViewUtil;
 import org.geometerplus.android.fbreader.util.AndroidImageSynchronizer;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public class CatalogManagerActivity extends ListActivity {
 	private final AndroidImageSynchronizer myImageSynchronizer = new AndroidImageSynchronizer(this);
@@ -45,6 +46,10 @@ public class CatalogManagerActivity extends ListActivity {
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
 		super.onCreate(icicle);
 		setContentView(R.layout.catalog_manager_view);
 	}

@@ -6,7 +6,64 @@
 	</style>
   <style name="FBReader.Dialog" parent="android:Theme.Holo.Dialog">
 	</style>
-	<style name="FBReader.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
+  <style name="FBReader.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
 		<item name="android:background">@color/primary</item>
 	</style>
+
+  <!-- ==================== 水墨屏主题 (API 14+) ==================== -->
+  <style name="FBReader.Activity.Ink" parent="android:Theme.Holo">
+    <item name="android:colorBackground">@color/ink_background</item>
+    <item name="android:windowBackground">@color/ink_background</item>
+    <item name="android:statusBarColor">@color/ink_background</item>
+    <item name="android:textColor">@color/ink_text</item>
+    <item name="android:textColorPrimary">@color/ink_text</item>
+    <item name="android:textColorSecondary">@color/ink_text_secondary</item>
+    <item name="android:colorPrimary">@color/ink_background</item>
+    <item name="android:colorPrimaryDark">@color/ink_background</item>
+    <item name="android:colorAccent">@color/ink_primary</item>
+    <item name="android:actionBarStyle">@style/FBReader.ActionBar.Ink</item>
+    <item name="android:panelBackground">@color/ink_background</item>
+  </style>
+
+  <style name="FBReader.ActionBar.Ink" parent="@android:style/Widget.Holo.ActionBar">
+    <item name="android:background">@color/ink_background</item>
+    <item name="android:titleTextStyle">@style/FBReader.ActionBar.Title.Ink</item>
+  </style>
+
+  <style name="FBReader.ActionBar.Title.Ink" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+    <item name="android:textColor">@color/ink_text</item>
+  </style>
+
+  <!-- 水墨屏 ProgressBar 样式 -->
+  <style name="FBReader.ProgressBar.Ink" parent="android:Widget.ProgressBar">
+    <item name="android:indeterminate">true</item>
+    <item name="android:indeterminateTint">@color/ink_text</item>
+  </style>
+
+  <style name="FBReader.Activity.Ink.NoActionBar" parent="android:Theme.Holo.NoActionBar">
+    <item name="android:colorBackground">@color/ink_background</item>
+    <item name="android:windowBackground">@color/ink_background</item>
+    <item name="android:statusBarColor">@color/ink_primary_dark</item>
+    <item name="android:navigationBarColor">@color/ink_background</item>
+    <item name="android:textColor">@color/ink_text</item>
+    <item name="android:textColorPrimary">@color/ink_text</item>
+    <item name="android:textColorSecondary">@color/ink_text_secondary</item>
+    <item name="android:colorPrimary">@color/ink_primary</item>
+    <item name="android:colorPrimaryDark">@color/ink_primary_dark</item>
+    <item name="android:colorAccent">@color/ink_primary</item>
+    <item name="android:divider">@color/ink_divider</item>
+    <item name="android:iconTint">@color/ink_icon</item>
+    <item name="android:panelBackground">@color/ink_background</item>
+  </style>
+
+  <style name="FBReader.Dialog.Ink" parent="android:Theme.Holo.Dialog">
+    <item name="android:colorBackground">@color/ink_background</item>
+    <item name="android:windowBackground">@color/ink_background</item>
+    <item name="android:textColor">@color/ink_text</item>
+    <item name="android:textColorPrimary">@color/ink_text</item>
+    <item name="android:textColorSecondary">@color/ink_text_secondary</item>
+    <item name="android:colorPrimary">@color/ink_primary</item>
+    <item name="android:colorAccent">@color/ink_primary</item>
+    <item name="android:divider">@color/ink_divider</item>
+  </style>
 </resources>

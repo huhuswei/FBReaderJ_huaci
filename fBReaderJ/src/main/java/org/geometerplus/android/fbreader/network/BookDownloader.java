@@ -28,6 +28,8 @@ import android.net.Uri;
 import android.content.Intent;
 
 import org.geometerplus.zlibrary.core.util.MimeType;
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 import org.geometerplus.fbreader.network.urlInfo.BookUrlInfo;
 
 public class BookDownloader extends Activity {
@@ -77,6 +79,11 @@ public class BookDownloader extends Activity {
 	}
 
 	public void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(icicle);
 
 		Thread.setDefaultUncaughtExceptionHandler(new org.geometerplus.zlibrary.ui.android.library.UncaughtExceptionHandler(this));

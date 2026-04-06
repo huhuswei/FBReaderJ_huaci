@@ -28,6 +28,8 @@ import android.content.*;
 import org.geometerplus.zlibrary.core.options.Config;
 import org.geometerplus.zlibrary.core.options.ZLStringOption;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.fbreader.book.Book;
 import org.geometerplus.fbreader.book.Bookmark;
@@ -79,8 +81,17 @@ class ExternalFileOpener implements FBReaderApp.ExternalFileOpener {
 		final String title =
 			dialogResource.getResource("missingPlugin").getResource("title").getValue()
 				.replace("%s", plugin.supportedFileType());
-		final AlertDialog.Builder builder = new AlertDialog.Builder(myReader)
-			.setTitle(title)
+
+		// 检查水墨屏主题
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		final AlertDialog.Builder builder;
+		if (zlibrary.InkThemeOption.getValue()) {
+			builder = new AlertDialog.Builder(myReader, R.style.FBReader_Dialog_Ink);
+		} else {
+			builder = new AlertDialog.Builder(myReader);
+		}
+
+		builder.setTitle(title)
 			.setIcon(0)
 			.setPositiveButton(buttonResource.getResource("yes").getValue(), new DialogInterface.OnClickListener() {
 				@Override

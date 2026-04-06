@@ -29,6 +29,7 @@ import android.view.*;
 import org.geometerplus.zlibrary.core.image.*;
 import org.geometerplus.zlibrary.core.util.ZLColor;
 
+import org.geometerplus.zlibrary.ui.android.R;
 import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 import org.geometerplus.zlibrary.ui.android.image.ZLAndroidImageData;
 import org.geometerplus.zlibrary.ui.android.util.ZLAndroidColorUtil;
@@ -44,9 +45,13 @@ public class ImageViewActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary library = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
+		if (library.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(icicle);
 
-		final ZLAndroidLibrary library = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
 		final boolean showStatusBar = library.ShowStatusBarOption.getValue();
 		getWindow().setFlags(
 			WindowManager.LayoutParams.FLAG_FULLSCREEN,

@@ -24,6 +24,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.fbreader.network.*;
 import org.geometerplus.fbreader.network.tree.NetworkCatalogTree;
@@ -60,8 +62,17 @@ public class OpenInBrowserAction extends CatalogAction {
 		} else {
 			final ZLResource buttonResource = ZLResource.resource("dialog").getResource("button");
 			final String message = NetworkLibrary.resource().getResource("confirmQuestions").getResource("openInBrowser").getValue();
-			new AlertDialog.Builder(myActivity)
-				.setTitle(tree.getName())
+
+			// 检查水墨屏主题
+			final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+			final AlertDialog.Builder builder;
+			if (zlibrary.InkThemeOption.getValue()) {
+				builder = new AlertDialog.Builder(myActivity, R.style.FBReader_Dialog_Ink);
+			} else {
+				builder = new AlertDialog.Builder(myActivity);
+			}
+
+			builder.setTitle(tree.getName())
 				.setMessage(message)
 				.setIcon(0)
 				.setPositiveButton(buttonResource.getResource("yes").getValue(), new DialogInterface.OnClickListener() {

@@ -19,6 +19,8 @@
 
 package org.geometerplus.android.fbreader.bookmark;
 
+import static org.geometerplus.android.fbreader.FBReaderUtil.getZLibrary;
+
 import java.util.*;
 
 import android.app.*;
@@ -34,6 +36,7 @@ import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.options.ZLStringOption;
 
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.fbreader.book.*;
 
@@ -74,6 +77,12 @@ public class BookmarksActivity extends Activity implements IBookCollection.Liste
 
 	@Override
 	public void onCreate(Bundle bundle) {
+		final ZLAndroidLibrary zlibrary = getZLibrary(this);
+		final boolean inkTheme = zlibrary.InkThemeOption.getValue();
+		if (inkTheme) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(bundle);
 
 		Thread.setDefaultUncaughtExceptionHandler(new org.geometerplus.zlibrary.ui.android.library.UncaughtExceptionHandler(this));

@@ -409,6 +409,10 @@
 				<node name="summaryOn" value="禁用设备系统按键发亮 (对某些设备无效)"/>
 				<node name="summaryOff" value="不要尝试禁用系统按键发亮"/>
 			</node>
+			<node name="inkTheme" value="水墨屏主题 (黑白)">
+				<node name="summaryOn" value="为水墨屏设备应用黑白主题"/>
+				<node name="summaryOff" value="使用正常主题"/>
+			</node>
 			<node name="twoColumnView" value="双列试图">
 				<node name="summaryOn" value="水平方向手持设备时使用双列显示文字"/>
 				<node name="summaryOff" value="始终将文字一列显示"/>

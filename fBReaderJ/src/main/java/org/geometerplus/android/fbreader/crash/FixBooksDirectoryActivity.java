@@ -32,6 +32,7 @@ import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.fbreader.Paths;
 
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.android.fbreader.FBReader;
 import org.geometerplus.android.util.FileChooserUtil;
@@ -41,6 +42,11 @@ public class FixBooksDirectoryActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle bundle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(bundle);
 		setContentView(R.layout.books_directory_fix);
 

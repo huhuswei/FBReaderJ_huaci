@@ -34,6 +34,7 @@ import android.widget.TextView;
 import org.geometerplus.zlibrary.core.network.ZLNetworkException;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.fbreader.network.authentication.litres.*;
 
@@ -61,6 +62,11 @@ abstract class RegistrationActivity extends Activity implements UserRegistration
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(icicle);
 
 		final Intent intent = getIntent();
@@ -173,7 +179,17 @@ abstract class RegistrationActivity extends Activity implements UserRegistration
 					final String selectedEmail = emailTextView.getText().toString().trim();
 					final int selected = emails.indexOf(selectedEmail);
 					final ZLResource buttonResource = ZLResource.resource("dialog").getResource("button");
-					final AlertDialog dialog = new AlertDialog.Builder(RegistrationActivity.this)
+
+					// 检查水墨屏主题
+					final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+					final AlertDialog.Builder builder;
+					if (zlibrary.InkThemeOption.getValue()) {
+						builder = new AlertDialog.Builder(RegistrationActivity.this, R.style.FBReader_Dialog_Ink);
+					} else {
+						builder = new AlertDialog.Builder(RegistrationActivity.this);
+					}
+
+					final AlertDialog dialog = builder
 						.setSingleChoiceItems(emails.toArray(new String[emails.size()]), selected, listener)
 						.setTitle(myResource.getResource("email").getValue())
 						.setNegativeButton(buttonResource.getResource("cancel").getValue(), null)

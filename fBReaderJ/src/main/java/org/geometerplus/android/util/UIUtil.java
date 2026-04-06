@@ -30,6 +30,8 @@ import android.os.Message;
 
 import org.geometerplus.zlibrary.core.application.ZLApplication;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public abstract class UIUtil {
 	private static final Object ourMonitor = new Object();
@@ -97,7 +99,19 @@ public abstract class UIUtil {
 		synchronized (ourMonitor) {
 			ourTaskQueue.offer(new Pair(action, message));
 			if (ourProgress == null) {
-				ourProgress = ProgressDialog.show(context, null, message, true, false);
+				// 检查水墨屏主题
+				final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+				final int theme = zlibrary.InkThemeOption.getValue() ? R.style.FBReader_Dialog_Ink : 0;
+
+				if (theme != 0 && context instanceof Activity) {
+					ourProgress = new ProgressDialog(context, theme);
+					ourProgress.setMessage(message);
+					ourProgress.setIndeterminate(true);
+					ourProgress.setCancelable(false);
+					ourProgress.show();
+				} else {
+					ourProgress = ProgressDialog.show(context, null, message, true, false);
+				}
 			} else {
 				return;
 			}
@@ -130,7 +144,17 @@ public abstract class UIUtil {
 			public void execute(final Runnable action, final Runnable uiPostAction) {
 				activity.runOnUiThread(new Runnable() {
 					public void run() {
-						myProgress = ProgressDialog.show(activity, null, myMessage, true, false);
+						// 检查水墨屏主题
+						final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+						if (zlibrary.InkThemeOption.getValue()) {
+							myProgress = new ProgressDialog(activity, R.style.FBReader_Dialog_Ink);
+							myProgress.setMessage(myMessage);
+							myProgress.setIndeterminate(true);
+							myProgress.setCancelable(false);
+							myProgress.show();
+						} else {
+							myProgress = ProgressDialog.show(activity, null, myMessage, true, false);
+						}
 						final Thread runner = new Thread() {
 							public void run() {
 								action.run();

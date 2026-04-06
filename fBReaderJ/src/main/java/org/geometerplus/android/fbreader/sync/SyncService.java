@@ -24,6 +24,7 @@ import java.util.*;
 
 import android.app.*;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -127,6 +128,33 @@ public class SyncService extends Service implements IBookCollection.Listener<Boo
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		final String action = intent != null ? intent.getAction() : FBReaderIntents.Action.SYNC_SYNC;
+
+		// 对于 Android 8.0+，需要启动前台服务
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			final NotificationChannel channel = new NotificationChannel(
+				"sync_channel",
+				"同步服务",
+				NotificationManager.IMPORTANCE_LOW
+			);
+			channel.setDescription("书籍同步通知");
+			final NotificationManager notificationManager = getSystemService(NotificationManager.class);
+			notificationManager.createNotificationChannel(channel);
+
+			// 停止服务时不需要启动前台服务
+			if (!FBReaderIntents.Action.SYNC_STOP.equals(action)) {
+				try {
+					startForeground(1, new Notification.Builder(this, "sync_channel")
+						.setContentTitle("FBReader")
+						.setContentText("正在同步书籍...")
+						.setSmallIcon(android.R.drawable.ic_popup_sync)
+						.build());
+				} catch (SecurityException e) {
+					// 权限不足时忽略
+					log("startForeground failed: " + e.getMessage());
+				}
+			}
+		}
+
 		if (FBReaderIntents.Action.SYNC_START.equals(action)) {
 			final AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 			alarmManager.cancel(syncIntent());

@@ -31,12 +31,17 @@ import android.widget.*;
 import org.geometerplus.zlibrary.ui.android.R;
 
 import org.geometerplus.android.fbreader.api.PluginApi;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 abstract class MenuActivity extends ListActivity implements AdapterView.OnItemClickListener {
 	protected List<PluginApi.MenuActionInfo> myInfos;
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Dialog_Ink);
+		}
 		super.onCreate(icicle);
 		myInfos = new ArrayList<PluginApi.MenuActionInfo>();
 

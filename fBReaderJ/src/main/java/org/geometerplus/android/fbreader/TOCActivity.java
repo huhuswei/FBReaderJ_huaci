@@ -31,6 +31,7 @@ import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.tree.ZLTree;
 
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.zlibrary.text.view.ZLTextWordCursor;
 import org.geometerplus.fbreader.bookmodel.TOCTree;
@@ -44,6 +45,11 @@ public class TOCActivity extends ListActivity {
 
 	@Override
 	public void onCreate(Bundle bundle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(bundle);
 
 		Thread.setDefaultUncaughtExceptionHandler(new org.geometerplus.zlibrary.ui.android.library.UncaughtExceptionHandler(this));
@@ -119,7 +125,8 @@ public class TOCActivity extends ListActivity {
 			final View view = (convertView != null) ? convertView :
 				LayoutInflater.from(parent.getContext()).inflate(R.layout.toc_tree_item, parent, false);
 			final TOCTree tree = (TOCTree)getItem(position);
-			view.setBackgroundColor(tree == mySelectedItem ? 0xff808080 : 0);
+			int inkDividerColor = getColor(R.color.ink_divider);
+			view.setBackgroundColor(tree == mySelectedItem ? inkDividerColor : 0);
 			setIcon(ViewUtil.findImageView(view, R.id.toc_tree_item_icon), tree);
 			ViewUtil.findTextView(view, R.id.toc_tree_item_text).setText(tree.getText());
 			return view;

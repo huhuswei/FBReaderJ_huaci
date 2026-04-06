@@ -21,6 +21,7 @@ package org.geometerplus.android.fbreader.sync;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import org.geometerplus.fbreader.fbreader.options.SyncOptions;
 import org.geometerplus.android.fbreader.api.FBReaderIntents;
@@ -29,15 +30,23 @@ public abstract class SyncOperations {
 	public static void enableSync(Context context, SyncOptions options) {
 		final String action = options.Enabled.getValue()
 			? FBReaderIntents.Action.SYNC_START : FBReaderIntents.Action.SYNC_STOP;
-		context.startService(new Intent(context, SyncService.class).setAction(action));
+		final Intent intent = new Intent(context, SyncService.class).setAction(action);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			context.startForegroundService(intent);
+		} else {
+			context.startService(intent);
+		}
 	}
 
 	public static void quickSync(Context context, SyncOptions options) {
 		if (options.Enabled.getValue()) {
-			context.startService(
-				new Intent(context, SyncService.class)
-					.setAction(FBReaderIntents.Action.SYNC_QUICK_SYNC)
-			);
+			final Intent intent = new Intent(context, SyncService.class)
+					.setAction(FBReaderIntents.Action.SYNC_QUICK_SYNC);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				context.startForegroundService(intent);
+			} else {
+				context.startService(intent);
+			}
 		}
 	}
 }

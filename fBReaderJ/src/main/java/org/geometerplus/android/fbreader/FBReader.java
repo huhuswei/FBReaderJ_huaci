@@ -156,7 +156,8 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 
 		myBook = FBReaderIntents.getBookExtra(intent, myFBReaderApp.Collection);
 		final Bookmark bookmark = FBReaderIntents.getBookmarkExtra(intent);
-		if (myBook == null && intent.getAction().equals("android.intent.action.SEND")) {
+		final String intentActionStr = intent.getAction();
+		if (myBook == null && "android.intent.action.SEND".equals(intentActionStr)) {
 			parseJumpIntent(intent);
 		}
 		if (myBook == null) {
@@ -249,7 +250,18 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary zlibrary = getZLibrary();
+		final boolean inkTheme = zlibrary.InkThemeOption.getValue();
+		if (inkTheme) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(icicle);
+
+		// 水墨屏主题下设置状态栏颜色
+		if (inkTheme && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			getWindow().setStatusBarColor(getResources().getColor(R.color.ink_background, getTheme()));
+		}
 
 		bindService(
 			new Intent(this, DataService.class),
@@ -269,7 +281,6 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 			}
 		});
 
-		final ZLAndroidLibrary zlibrary = getZLibrary();
 		myShowStatusBarFlag = zlibrary.ShowStatusBarOption.getValue();
 		myShowActionBarFlag = zlibrary.ShowActionBarOption.getValue();
 		myActionBarIsVisible = myShowActionBarFlag;

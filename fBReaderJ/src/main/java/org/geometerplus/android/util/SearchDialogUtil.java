@@ -28,6 +28,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public abstract class SearchDialogUtil {
 	public static void showDialog(Activity activity, Class<? extends Activity> clazz, String initialPattern, DialogInterface.OnCancelListener listener) {
@@ -35,7 +37,14 @@ public abstract class SearchDialogUtil {
 	}
 
 	public static void showDialog(final Activity activity, final Class<? extends Activity> clazz, final String initialPattern, DialogInterface.OnCancelListener listener, final Bundle bundle) {
-		final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		// 检查水墨屏主题
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		final AlertDialog.Builder builder;
+		if (zlibrary.InkThemeOption.getValue()) {
+			builder = new AlertDialog.Builder(activity, R.style.FBReader_Dialog_Ink);
+		} else {
+			builder = new AlertDialog.Builder(activity);
+		}
 
 		builder.setTitle(ZLResource.resource("menu").getResource("search").getValue());
 

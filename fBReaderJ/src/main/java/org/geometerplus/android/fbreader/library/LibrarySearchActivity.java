@@ -24,9 +24,17 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
+
 public class LibrarySearchActivity extends Activity {
 	@Override
 	public void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(icicle);
 
 		Intent intent = getIntent();

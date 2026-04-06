@@ -30,6 +30,7 @@ import android.view.*;
 import org.geometerplus.zlibrary.core.options.Config;
 
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.fbreader.fbreader.options.CancelMenuHelper;
 
@@ -43,6 +44,11 @@ public class CancelActivity extends ListActivity {
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Dialog_Ink);
+		}
+
 		super.onCreate(icicle);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		FBReaderUtil.ensureFullscreen(this, getListView());

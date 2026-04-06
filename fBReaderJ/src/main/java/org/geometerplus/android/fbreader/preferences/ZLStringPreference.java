@@ -20,9 +20,13 @@
 package org.geometerplus.android.fbreader.preferences;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.preference.DialogPreference;
 import android.preference.EditTextPreference;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public abstract class ZLStringPreference extends EditTextPreference {
 	private String myValue;
@@ -32,6 +36,23 @@ public abstract class ZLStringPreference extends EditTextPreference {
 
 		ZLResource resource = rootResource.getResource(resourceKey);
 		setTitle(resource.getValue());
+	}
+
+	@Override
+	protected void showDialog(Bundle state) {
+		// 检查水墨屏主题
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary != null && zlibrary.InkThemeOption.getValue()) {
+			// 移除之前的对话框(如果有)
+			try {
+				java.lang.reflect.Method removeMethod = DialogPreference.class.getDeclaredMethod("removeDialog");
+				removeMethod.setAccessible(true);
+				removeMethod.invoke(this);
+			} catch (Exception e) {
+				// 忽略
+			}
+		}
+		super.showDialog(state);
 	}
 
 	protected void setValue(String value) {

@@ -34,6 +34,7 @@ import org.geometerplus.zlibrary.core.options.ZLStringOption;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.fbreader.Paths;
 import org.geometerplus.fbreader.book.*;
@@ -56,6 +57,11 @@ public class LibraryActivity extends TreeActivity<LibraryTree> implements MenuIt
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			setTheme(R.style.FBReader_Activity_Ink);
+		}
+
 		super.onCreate(icicle);
 
 		mySelectedBook = FBReaderIntents.getBookExtra(getIntent(), myCollection);
@@ -440,8 +446,17 @@ public class LibraryActivity extends TreeActivity<LibraryTree> implements MenuIt
 			: boxResource.getResource("title").getValue();
 		final String message =
 			boxResource.getResource("message").getValue(size).replaceAll("%s", String.valueOf(size));
-		new AlertDialog.Builder(this)
-			.setTitle(title)
+
+		// 检查水墨屏主题
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		final AlertDialog.Builder builder;
+		if (zlibrary.InkThemeOption.getValue()) {
+			builder = new AlertDialog.Builder(this, R.style.FBReader_Dialog_Ink);
+		} else {
+			builder = new AlertDialog.Builder(this);
+		}
+
+		builder.setTitle(title)
 			.setMessage(message)
 			.setIcon(0)
 			.setPositiveButton(buttonResource.getResource("yes").getValue(), new BookDeleter(books))

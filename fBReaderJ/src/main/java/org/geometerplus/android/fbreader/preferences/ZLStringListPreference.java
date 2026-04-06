@@ -20,9 +20,12 @@
 package org.geometerplus.android.fbreader.preferences;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.preference.ListPreference;
 
 import org.geometerplus.zlibrary.core.resources.ZLResource;
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 abstract class ZLStringListPreference extends ListPreference {
 	protected final ZLResource myValuesResource;
@@ -39,6 +42,17 @@ abstract class ZLStringListPreference extends ListPreference {
 		final ZLResource buttonResource = ZLResource.resource("dialog").getResource("button");
 		setPositiveButtonText(buttonResource.getResource("ok").getValue());
 		setNegativeButtonText(buttonResource.getResource("cancel").getValue());
+	}
+
+	@Override
+	protected void showDialog(Bundle state) {
+		// 检查水墨屏主题
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary != null && zlibrary.InkThemeOption.getValue()) {
+			// 直接设置对话框的主题样式
+			getContext().getTheme().applyStyle(R.style.FBReader_PreferenceDialog_Ink, true);
+		}
+		super.showDialog(state);
 	}
 
 	protected final void setList(String[] values) {
