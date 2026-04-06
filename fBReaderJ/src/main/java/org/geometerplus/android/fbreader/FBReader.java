@@ -740,7 +740,10 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 
 	@Override
 	protected void onPause() {
-		SyncOperations.quickSync(this, myFBReaderApp.SyncOptions);
+		// 只在同步已启用时执行快速同步
+		if (myFBReaderApp.SyncOptions.Enabled.getValue()) {
+			SyncOperations.quickSync(this, myFBReaderApp.SyncOptions);
+		}
 
 		IsPaused = true;
 		try {

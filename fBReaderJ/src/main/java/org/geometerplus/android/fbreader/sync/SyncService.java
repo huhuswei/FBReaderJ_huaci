@@ -86,6 +86,34 @@ public class SyncService extends Service implements IBookCollection.Listener<Boo
 
 	private final List<Book> myQueue = Collections.synchronizedList(new LinkedList<Book>());
 
+	@Override
+	public void onCreate() {
+		super.onCreate();
+
+		// 对于 Android 8.0+，必须在 onCreate 中立即启动前台服务
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			final NotificationChannel channel = new NotificationChannel(
+				"sync_channel",
+				"同步服务",
+				NotificationManager.IMPORTANCE_LOW
+			);
+			channel.setDescription("书籍同步通知");
+			final NotificationManager notificationManager = getSystemService(NotificationManager.class);
+			notificationManager.createNotificationChannel(channel);
+
+			Notification notification = new Notification.Builder(this, "sync_channel")
+				.setContentTitle("FBReader")
+				.setContentText("正在同步书籍...")
+				.setSmallIcon(android.R.drawable.ic_popup_sync)
+				.setPriority(Notification.PRIORITY_LOW)
+				.setOngoing(true)
+				.build();
+
+			// 必须在 onCreate 中立即调用 startForeground
+			startForeground(1, notification);
+		}
+	}
+
 	private static final class Hashes {
 		final Set<String> Actual = new HashSet<String>();
 		final Set<String> Deleted = new HashSet<String>();
@@ -129,29 +157,22 @@ public class SyncService extends Service implements IBookCollection.Listener<Boo
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		final String action = intent != null ? intent.getAction() : FBReaderIntents.Action.SYNC_SYNC;
 
-		// 对于 Android 8.0+，需要启动前台服务
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			final NotificationChannel channel = new NotificationChannel(
-				"sync_channel",
-				"同步服务",
-				NotificationManager.IMPORTANCE_LOW
-			);
-			channel.setDescription("书籍同步通知");
-			final NotificationManager notificationManager = getSystemService(NotificationManager.class);
-			notificationManager.createNotificationChannel(channel);
+		// 如果是同步请求且同步未启用，直接停止
+		if ((FBReaderIntents.Action.SYNC_SYNC.equals(action) || FBReaderIntents.Action.SYNC_QUICK_SYNC.equals(action))
+				&& !mySyncOptions.Enabled.getValue()) {
+			log("sync disabled, skipping");
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				stopForeground(true);
+			}
+			stopSelf();
+			return START_STICKY;
+		}
 
-			// 停止服务时不需要启动前台服务
-			if (!FBReaderIntents.Action.SYNC_STOP.equals(action)) {
-				try {
-					startForeground(1, new Notification.Builder(this, "sync_channel")
-						.setContentTitle("FBReader")
-						.setContentText("正在同步书籍...")
-						.setSmallIcon(android.R.drawable.ic_popup_sync)
-						.build());
-				} catch (SecurityException e) {
-					// 权限不足时忽略
-					log("startForeground failed: " + e.getMessage());
-				}
+		// 前台服务已在 onCreate 中启动，这里只需要处理停止逻辑
+		if (FBReaderIntents.Action.SYNC_STOP.equals(action)) {
+			// 停止前台服务
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				stopForeground(true);
 			}
 		}
 
@@ -506,7 +527,10 @@ public class SyncService extends Service implements IBookCollection.Listener<Boo
 				addBook(book);
 				break;
 			case Opened:
-				SyncOperations.quickSync(this, mySyncOptions);
+				// 只在同步已启用时执行快速同步
+				if (mySyncOptions.Enabled.getValue()) {
+					SyncOperations.quickSync(this, mySyncOptions);
+				}
 				break;
 		}
 	}

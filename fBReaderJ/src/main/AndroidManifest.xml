@@ -329,7 +329,8 @@
             android:name="org.geometerplus.android.fbreader.sync.SyncService"
             android:exported="true"
             android:launchMode="singleTask"
-            android:process=":synchroniser">
+            android:process=":synchroniser"
+            android:foregroundServiceType="dataSync">
             <intent-filter>
                 <action android:name="android.fbreader.action.sync.START" />
             </intent-filter>
