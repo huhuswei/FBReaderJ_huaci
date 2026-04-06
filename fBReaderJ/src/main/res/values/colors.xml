@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 默认主题颜色 -->
+    <item name="primary" type="color">#222222</item>
+    <item name="primary_dark" type="color">#111111</item>
+
+    <!-- 水墨屏主题颜色 -->
+    <item name="ink_primary" type="color">#CCCCCC</item>
+    <item name="ink_primary_dark" type="color">#DDDDDD</item>
+    <item name="ink_background" type="color">#FFFFFF</item>
+    <item name="ink_text" type="color">#333333</item>
+    <item name="ink_text_secondary" type="color">#666666</item>
+    <item name="ink_divider" type="color">#CCCCCC</item>
+    <item name="ink_icon" type="color">#555555</item>
+    <item name="ink_highlight" type="color">#EEEEEE</item>
+    <item name="ink_edit" type="color">#F5F5F5</item>
+</resources>

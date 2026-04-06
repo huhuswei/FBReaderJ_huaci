@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.geometerplus.android.fbreader.NavigationWindow
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/navigation_panel"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_alignParentBottom="true"
+	android:layout_centerHorizontal="true"
+	android:visibility="gone"
+	android:focusable="false"
+	android:paddingLeft="24dip"
+	android:paddingRight="24dip"
+	android:background="@color/ink_primary"
+	android:orientation="vertical"
+>
+	<TextView
+		android:id="@+id/navigation_text"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:singleLine="true"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:textColor="@color/ink_text"
+		android:ellipsize="end"
+		android:paddingTop="4dp"
+	/>
+	<SeekBar
+		android:id="@+id/navigation_slider"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingTop="4dp"
+		android:progressTint="@color/ink_text"
+		android:thumbTint="@color/ink_text"
+	/>
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/navigation_slider"
+		android:layout_alignParentBottom="true"
+		android:paddingTop="4dp"
+	>
+		<Button
+			android:id="@+id/navigation_reset_button"
+			style="?android:attr/buttonBarButtonStyle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:textColor="@color/ink_text"
+		/>
+	</RelativeLayout>
+</org.geometerplus.android.fbreader.NavigationWindow>
