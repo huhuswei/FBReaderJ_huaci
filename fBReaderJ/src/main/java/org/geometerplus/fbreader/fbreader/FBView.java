@@ -759,7 +759,7 @@ public final class FBView extends ZLTextView {
 	@Override
 	protected void releaseSelectionCursor() {
 		super.releaseSelectionCursor();
-		if (getCountOfSelectedWords() > 4) {
+		if (getCountOfSelectedWords() > 1) {
 			myReader.runAction(ActionCode.SELECTION_SHOW_PANEL);
 		} else {
 			myReader.runAction(ActionCode.SELECTION_TRANSLATE);
@@ -800,8 +800,11 @@ public final class FBView extends ZLTextView {
 	@Override
 	protected ZLPaintContext.ColorAdjustingMode getAdjustingModeForImages() {
 		if (myReader.ImageOptions.MatchBackground.getValue()) {
-			if (ColorProfile.DAY.equals(myViewOptions.getColorProfile().Name)) {
+			final String profileName = myViewOptions.getColorProfile().Name;
+			if (ColorProfile.DAY.equals(profileName) || ColorProfile.INK.equals(profileName)) {
 				return ZLPaintContext.ColorAdjustingMode.DARKEN_TO_BACKGROUND;
+			} else if (ColorProfile.NIGHT.equals(profileName) || ColorProfile.INK_NIGHT.equals(profileName)) {
+				return ZLPaintContext.ColorAdjustingMode.LIGHTEN_TO_BACKGROUND;
 			} else {
 				return ZLPaintContext.ColorAdjustingMode.LIGHTEN_TO_BACKGROUND;
 			}

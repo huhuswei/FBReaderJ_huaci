@@ -10,19 +10,30 @@
   </style>
 
   <!-- ==================== 水墨屏主题 ==================== -->
-  <!-- 水墨屏主 Activity 主题 - 使用带 ActionBar 的父主题 -->
+  <!-- 水墨屏主 Activity 主题 -->
   <style name="FBReader.Activity.Ink" parent="android:Theme.Holo">
+    <item name="android:windowBackground">@drawable/ink_theme_bg</item>
     <item name="android:colorBackground">@color/ink_background</item>
-    <item name="android:windowBackground">@color/ink_background</item>
     <item name="android:statusBarColor">@color/ink_background</item>
-    <item name="android:textColor">@color/ink_text</item>
     <item name="android:textColorPrimary">@color/ink_text</item>
     <item name="android:textColorSecondary">@color/ink_text_secondary</item>
     <item name="android:colorPrimary">@color/ink_background</item>
-    <item name="android:colorPrimaryDark">@color/ink_background</item>
+    <item name="android:colorPrimaryDark">@color/ink_background_secondary</item>
     <item name="android:colorAccent">@color/ink_primary</item>
     <item name="android:actionBarStyle">@style/FBReader.ActionBar.Ink</item>
     <item name="android:panelBackground">@color/ink_background</item>
+    <item name="android:selectableItemBackground">@drawable/ink_theme_selectable_bg</item>
+    <item name="android:listDivider">@color/ink_divider</item>
+    <item name="android:alertDialogStyle">@style/FBReader.AlertDialog.Ink</item>
+    <item name="android:dialogTheme">@style/FBReader.PreferenceDialog.Ink</item>
+    <!-- 关闭窗口动画 -->
+    <item name="android:windowAnimationStyle">@null</item>
+    <item name="android:activityOpenEnterAnimation">@null</item>
+    <item name="android:activityOpenExitAnimation">@null</item>
+    <item name="android:activityCloseEnterAnimation">@null</item>
+    <item name="android:activityCloseExitAnimation">@null</item>
+    <!-- 关闭过渡动画 -->
+    <item name="android:windowContentTransitions">false</item>
   </style>
 
   <!-- 水墨屏 ActionBar 样式 -->
@@ -46,7 +57,6 @@
   <!-- 水墨屏 ProgressBar 样式 -->
   <style name="FBReader.ProgressBar.Ink" parent="android:Widget.ProgressBar">
     <item name="android:indeterminate">true</item>
-    <item name="android:indeterminateTint">@color/ink_text</item>
   </style>
 
   <!-- 水墨屏水平 ProgressBar 样式 -->
@@ -58,47 +68,47 @@
   <!-- 水墨屏大圆形 ProgressBar 样式 -->
   <style name="FBReader.ProgressBar.Large.Ink" parent="android:Widget.ProgressBar.Large">
     <item name="android:indeterminate">true</item>
-    <item name="android:indeterminateTint">@color/ink_text</item>
   </style>
 
   <!-- 水墨屏无 ActionBar 主题 -->
   <style name="FBReader.Activity.Ink.NoActionBar" parent="android:Theme.Holo.NoActionBar">
+    <item name="android:windowBackground">@drawable/ink_theme_bg</item>
     <item name="android:colorBackground">@color/ink_background</item>
-    <item name="android:windowBackground">@color/ink_background</item>
     <item name="android:statusBarColor">@color/ink_primary_dark</item>
     <item name="android:navigationBarColor">@color/ink_background</item>
-    <item name="android:textColor">@color/ink_text</item>
     <item name="android:textColorPrimary">@color/ink_text</item>
     <item name="android:textColorSecondary">@color/ink_text_secondary</item>
     <item name="android:colorPrimary">@color/ink_primary</item>
     <item name="android:colorPrimaryDark">@color/ink_primary_dark</item>
     <item name="android:colorAccent">@color/ink_primary</item>
     <item name="android:divider">@color/ink_divider</item>
-    <item name="android:iconTint">@color/ink_icon</item>
     <item name="android:panelBackground">@color/ink_background</item>
+    <item name="android:selectableItemBackground">@drawable/ink_theme_selectable_bg</item>
+    <item name="android:listDivider">@color/ink_divider</item>
+    <item name="android:alertDialogStyle">@style/FBReader.AlertDialog.Ink</item>
+    <!-- 关闭窗口动画 -->
+    <item name="android:windowAnimationStyle">@null</item>
+    <item name="android:activityOpenEnterAnimation">@null</item>
+    <item name="android:activityOpenExitAnimation">@null</item>
+    <item name="android:activityCloseEnterAnimation">@null</item>
+    <item name="android:activityCloseExitAnimation">@null</item>
+    <!-- 关闭过渡动画 -->
+    <item name="android:windowContentTransitions">false</item>
   </style>
 
   <!-- 水墨屏对话框主题 -->
   <style name="FBReader.Dialog.Ink" parent="android:Theme.Holo.Dialog">
-    <item name="android:colorBackground">@color/ink_background</item>
-    <item name="android:windowBackground">@color/ink_background</item>
-    <item name="android:textColor">@color/ink_text</item>
+    <item name="android:windowBackground">@drawable/ink_theme_dialog_background</item>
     <item name="android:textColorPrimary">@color/ink_text</item>
     <item name="android:textColorSecondary">@color/ink_text_secondary</item>
-    <item name="android:colorPrimary">@color/ink_primary</item>
-    <item name="android:colorAccent">@color/ink_primary</item>
     <item name="android:divider">@color/ink_divider</item>
   </style>
 
-  <!-- 水墨屏 Preference DialogActivity 主题 (用于 Preference 对话框) -->
+  <!-- 水墨屏 Preference DialogActivity 主题 -->
   <style name="FBReader.PreferenceDialog.Ink" parent="android:Theme.Holo.Dialog">
-    <item name="android:colorBackground">@color/ink_background</item>
-    <item name="android:windowBackground">@color/ink_background</item>
-    <item name="android:textColor">@color/ink_text</item>
+    <item name="android:windowBackground">@drawable/ink_theme_dialog_background</item>
     <item name="android:textColorPrimary">@color/ink_text</item>
     <item name="android:textColorSecondary">@color/ink_text_secondary</item>
-    <item name="android:colorPrimary">@color/ink_primary</item>
-    <item name="android:colorAccent">@color/ink_primary</item>
     <item name="android:divider">@color/ink_divider</item>
     <item name="android:editTextBackground">@color/ink_edit</item>
   </style>
@@ -118,6 +128,8 @@
   <style name="FBReader.ListView.Ink" parent="android:Widget.Holo.ListView">
     <item name="android:background">@color/ink_background</item>
     <item name="android:divider">@color/ink_divider</item>
+    <item name="android:listDivider">@color/ink_shadow</item>
+    <item name="android:selectableItemBackground">@drawable/ink_theme_selectable_bg</item>
   </style>
 
   <!-- 水墨屏文字样式 -->
@@ -129,5 +141,53 @@
   <style name="FBReader.TextAppearance.Ink.Large" parent="android:TextAppearance">
     <item name="android:textColor">@color/ink_text</item>
     <item name="android:textSize">60sp</item>
+  </style>
+
+  <!-- 水墨屏 ActionBar 活动菜单样式 -->
+  <style name="FBReader.ActionMenu.Ink" parent="android:Widget.Holo.ActionButton">
+    <item name="android:background">@drawable/ink_theme_selectable_bg</item>
+    <item name="android:textColor">@color/ink_text</item>
+  </style>
+
+  <!-- 水墨屏 Preference Screen 样式 -->
+  <style name="FBReader.PreferenceScreen.Ink" parent="android:Theme">
+    <item name="android:background">@color/ink_background</item>
+    <item name="android:textColor">@color/ink_text</item>
+  </style>
+
+  <!-- 水墨屏 CheckBox 样式 -->
+  <style name="FBReader.CheckBox.Ink" parent="android:Widget.CompoundButton.CheckBox">
+    <item name="android:textColor">@color/ink_text</item>
+  </style>
+
+  <!-- 水墨屏 RadioButton 样式 -->
+  <style name="FBReader.RadioButton.Ink" parent="android:Widget.CompoundButton.RadioButton">
+    <item name="android:textColor">@color/ink_text</item>
+  </style>
+
+  <!-- 水墨屏 Switch 样式 -->
+  <style name="FBReader.Switch.Ink" parent="android:Widget.CompoundButton">
+    <item name="android:textColor">@color/ink_text</item>
+  </style>
+
+  <!-- 水墨屏 PopupMenu 样式 -->
+  <style name="FBReader.PopupMenu.Ink" parent="android:Widget.PopupMenu">
+    <item name="android:popupBackground">@drawable/ink_theme_menu_background</item>
+    <item name="android:textColor">@color/ink_text</item>
+  </style>
+
+  <!-- 水墨屏 ProgressBar 水平进度条 Drawable -->
+  <style name="FBReader.ProgressBar.Ink.Drawable" parent="android:Widget.ProgressBar.Horizontal">
+    <item name="android:progressDrawable">@drawable/progress_horizontal_ink</item>
+  </style>
+
+  <!-- 水墨屏 AlertDialog 对话框样式（全局） -->
+  <style name="FBReader.AlertDialog.Ink" parent="android:Theme.Holo.Dialog">
+    <item name="android:windowBackground">@drawable/ink_theme_dialog_background</item>
+    <item name="android:textColorPrimary">@color/ink_text</item>
+    <item name="android:textColorSecondary">@color/ink_text_secondary</item>
+    <item name="android:divider">@color/ink_divider</item>
+    <item name="android:background">@color/ink_background</item>
+    <item name="android:colorBackground">@color/ink_background</item>
   </style>
 </resources>

@@ -147,9 +147,9 @@ public class ZLAndroidWidget extends MainView implements ZLViewWidget, View.OnLo
 			return;
 		}
 
-		final ZLAndroidLibrary library = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
-		final ZLIntegerOption stageOption = library.ScreenHintStageOption;
-		if (!library.OldShowActionBarOption.getValue()) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
+		final ZLIntegerOption stageOption = zlibrary.ScreenHintStageOption;
+		if (!zlibrary.OldShowActionBarOption.getValue()) {
 			stageOption.setValue(3);
 		}
 		if (stageOption.getValue() >= 3) {

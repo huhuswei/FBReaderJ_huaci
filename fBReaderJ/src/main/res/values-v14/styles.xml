@@ -23,6 +23,14 @@
     <item name="android:colorAccent">@color/ink_primary</item>
     <item name="android:actionBarStyle">@style/FBReader.ActionBar.Ink</item>
     <item name="android:panelBackground">@color/ink_background</item>
+    <!-- 关闭窗口动画 -->
+    <item name="android:windowAnimationStyle">@null</item>
+    <item name="android:activityOpenEnterAnimation">@null</item>
+    <item name="android:activityOpenExitAnimation">@null</item>
+    <item name="android:activityCloseEnterAnimation">@null</item>
+    <item name="android:activityCloseExitAnimation">@null</item>
+    <!-- 关闭过渡动画 -->
+    <item name="android:windowContentTransitions">false</item>
   </style>
 
   <style name="FBReader.ActionBar.Ink" parent="@android:style/Widget.DeviceDefault.ActionBar">
@@ -42,6 +50,14 @@
     <item name="android:colorAccent">@color/ink_primary</item>
     <item name="android:divider">@color/ink_divider</item>
     <item name="android:panelBackground">@color/ink_background</item>
+    <!-- 关闭窗口动画 -->
+    <item name="android:windowAnimationStyle">@null</item>
+    <item name="android:activityOpenEnterAnimation">@null</item>
+    <item name="android:activityOpenExitAnimation">@null</item>
+    <item name="android:activityCloseEnterAnimation">@null</item>
+    <item name="android:activityCloseExitAnimation">@null</item>
+    <!-- 关闭过渡动画 -->
+    <item name="android:windowContentTransitions">false</item>
   </style>
 
   <style name="FBReader.Dialog.Ink" parent="android:Theme.DeviceDefault.Dialog">

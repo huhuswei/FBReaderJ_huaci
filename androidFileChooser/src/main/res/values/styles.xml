@@ -7,7 +7,7 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    
+
     <style name="afc_button_location" parent="@android:style/Widget.TextView">
         <item name="android:textColor">#ffffff</item>
         <item name="android:layout_width">wrap_content</item>
@@ -51,5 +51,24 @@
 
     <style name="afc_button_folders_view" parent="afc_button_create_folder">
         <item name="android:src">@drawable/afc_selector_button_folders_view_list</item>
+    </style>
+
+    <!-- ==================== 水墨屏主题 ==================== -->
+    <!-- 水墨屏 FileChooser Activity 主题 -->
+    <style name="afc_Activity_Ink" parent="android:Theme.Holo">
+        <item name="android:windowBackground">@color/afc_ink_background</item>
+        <item name="android:colorBackground">@color/afc_ink_background</item>
+        <item name="android:textColorPrimary">@color/afc_ink_text</item>
+        <item name="android:textColorSecondary">@color/afc_ink_text_secondary</item>
+        <item name="android:colorPrimary">@color/afc_ink_background</item>
+        <item name="android:colorPrimaryDark">@color/afc_ink_background_dark</item>
+        <item name="android:colorAccent">@color/afc_ink_primary</item>
+    </style>
+
+    <!-- 水墨屏对话框主题 -->
+    <style name="afc_Dialog_Ink" parent="android:Theme.Holo.Dialog">
+        <item name="android:windowBackground">@color/afc_ink_background</item>
+        <item name="android:textColorPrimary">@color/afc_ink_text</item>
+        <item name="android:textColorSecondary">@color/afc_ink_text_secondary</item>
     </style>
 </resources>

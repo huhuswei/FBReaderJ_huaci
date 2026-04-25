@@ -71,26 +71,26 @@ public class SelectionTranslateAction extends FBAndroidAction {
 		String title = this.Reader.getCurrentBook().getTitle();
 		String noteHtml = "from <i>" + title + "</i> - " + (Math.round(100.0f * this.Reader.getCurrentBook().getProgress().toFloat()) + "%") + "<br/><a id='fb_source' href='" + getJumpIntentString(this.Reader) + "'>jump to source</a>";
 		Intent intent;
-		if (this.Reader.getTextView().getCountOfSelectedWords() > 4) {
-			String text = this.Reader.getTextView().getSelectedSnippet().getText();
-			intent = new Intent();
-			if (isAnkiHelper) {
-				intent.setClassName("com.mmjang.ankihelper", "com.mmjang.ankihelper.ui.popup.PopupActivity");
-			}
-			if (isQuizHelper) {
-				intent.setClassName("com.mmjang.quizhelper", "com.mmjang.quizhelper.ui.popup.PopupActivity");
-			}
-			if (isAnkiHelper || isQuizHelper) {
-				intent.setAction("android.intent.action.SEND");
-				intent.putExtra("android.intent.extra.TEXT", text);
-				intent.putExtra(INTENT_ANKIHELPER_NOTE, noteHtml);
-				intent.setType("text/plain");
-				this.BaseActivity.startActivity(intent);
-				fbview.clearSelection();
-				return;
-			}
-			return;
-		}
+//		if (this.Reader.getTextView().getCountOfSelectedWords() > 1) {
+//			String text = this.Reader.getTextView().getSelectedSnippet().getText();
+//			intent = new Intent();
+//			if (isAnkiHelper) {
+//				intent.setClassName("com.mmjang.ankihelper", "com.mmjang.ankihelper.ui.popup.PopupActivity");
+//			}
+//			if (isQuizHelper) {
+//				intent.setClassName("com.mmjang.quizhelper", "com.mmjang.quizhelper.ui.popup.PopupActivity");
+//			}
+//			if (isAnkiHelper || isQuizHelper) {
+//				intent.setAction("android.intent.action.SEND");
+//				intent.putExtra("android.intent.extra.TEXT", text);
+//				intent.putExtra(INTENT_ANKIHELPER_NOTE, noteHtml);
+//				intent.setType("text/plain");
+//				this.BaseActivity.startActivity(intent);
+//				fbview.clearSelection();
+//				return;
+//			}
+//			return;
+//		}
 		ZLTextElement element;
 		String word;
 		ZLTextWordCursor cur = new ZLTextWordCursor(this.Reader.getTextView().getStartCursor());

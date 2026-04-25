@@ -31,6 +31,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.network.ZLNetworkException;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.ui.android.R;
@@ -64,7 +65,7 @@ abstract class RegistrationActivity extends Activity implements UserRegistration
 	protected void onCreate(Bundle icicle) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 
 		super.onCreate(icicle);

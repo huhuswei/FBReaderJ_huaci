@@ -28,7 +28,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.application.ZLKeyBindings;
 import org.geometerplus.zlibrary.core.language.Language;
 import org.geometerplus.zlibrary.core.network.ZLNetworkException;
@@ -50,6 +53,7 @@ import org.geometerplus.fbreader.network.sync.SyncUtil;
 import org.geometerplus.fbreader.tips.TipsManager;
 
 import org.geometerplus.android.fbreader.FBReader;
+import org.geometerplus.zlibrary.ui.android.R;
 import org.geometerplus.android.fbreader.dict.DictionaryUtil;
 import org.geometerplus.android.fbreader.libraryService.BookCollectionShadow;
 import org.geometerplus.android.fbreader.network.auth.ActivityNetworkContext;
@@ -68,6 +72,30 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 
 	public PreferenceActivity() {
 		super("Preferences");
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+//		// 水墨屏主题 - 右上角菜单
+//		MenuItem inkItem = menu.add(0, 1, 0, R.string.inkTheme);
+//		inkItem.setCheckable(true);
+//		inkItem.setChecked(((ZLAndroidLibrary)ZLAndroidLibrary.Instance()).InkThemeOption.getValue());
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == 1) {
+//			// 切换水墨屏主题
+//			final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+//			boolean newValue = !zlibrary.InkThemeOption.getValue();
+//			zlibrary.InkThemeOption.setValue(newValue);
+//			item.setChecked(newValue);
+//			recreate();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -126,6 +154,7 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 			String.valueOf(new DecimalFormatSymbols(Locale.getDefault()).getDecimalSeparator());
 
 		final Screen directoriesScreen = createPreferenceScreen("directories");
+
 		final Runnable libraryUpdater = new Runnable() {
 			public void run() {
 				final BookCollectionShadow bookCollection = new BookCollectionShadow();
@@ -301,11 +330,6 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 			appearanceScreen.addOption(androidLibrary.EnableFullscreenModeOption, "fullscreenMode");
 		}
 		appearanceScreen.addOption(androidLibrary.DisableButtonLightsOption, "disableButtonLights");
-
-		final ZLResource inkThemeResource = appearanceScreen.Resource.getResource("inkTheme");
-		appearanceScreen.addPreference(new ZLBooleanPreference(
-			this, androidLibrary.InkThemeOption, inkThemeResource
-		));
 
 		if (DeviceType.Instance().isEInk()) {
 			final EInkOptions einkOptions = new EInkOptions();

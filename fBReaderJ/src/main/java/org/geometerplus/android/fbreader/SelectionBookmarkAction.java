@@ -34,6 +34,8 @@ import org.geometerplus.fbreader.fbreader.FBReaderApp;
 
 import org.geometerplus.android.fbreader.api.FBReaderIntents;
 import org.geometerplus.android.fbreader.bookmark.EditBookmarkActivity;
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public class SelectionBookmarkAction extends FBAndroidAction {
 	SelectionBookmarkAction(FBReader baseApplication, FBReaderApp fbreader) {
@@ -51,8 +53,15 @@ public class SelectionBookmarkAction extends FBAndroidAction {
 
 		final SuperActivityToast toast =
 			new SuperActivityToast(BaseActivity, SuperToast.Type.BUTTON);
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			toast.setBackground(R.drawable.ink_theme_dialog_background);
+			toast.setAnimations( SuperToast. Animations.POPUP);
+			toast.setTextColor(0xFF000000); // 纯黑色
+			toast.setButtonTextColor(0xFF000000); // 纯黑色
+		}
 		toast.setText(bookmark.getText());
-		toast.setDuration(SuperToast.Duration.EXTRA_LONG);
+		toast.setDuration(10000);//SuperToast.Duration.EXTRA_LONG);
 		toast.setButtonIcon(
 			android.R.drawable.ic_menu_edit,
 			ZLResource.resource("dialog").getResource("button").getResource("edit").getValue()

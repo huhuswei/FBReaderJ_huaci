@@ -45,14 +45,14 @@ public class ImageViewActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle icicle) {
-		final ZLAndroidLibrary library = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
-		if (library.InkThemeOption.getValue()) {
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
 			setTheme(R.style.FBReader_Activity_Ink);
 		}
 
 		super.onCreate(icicle);
 
-		final boolean showStatusBar = library.ShowStatusBarOption.getValue();
+		final boolean showStatusBar = zlibrary.ShowStatusBarOption.getValue();
 		getWindow().setFlags(
 			WindowManager.LayoutParams.FLAG_FULLSCREEN,
 			showStatusBar ? 0 : WindowManager.LayoutParams.FLAG_FULLSCREEN

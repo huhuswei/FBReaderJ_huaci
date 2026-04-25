@@ -26,16 +26,46 @@ import org.geometerplus.zlibrary.core.resources.ZLResource;
 
 class ZLBooleanPreference extends ZLCheckBoxPreference {
 	private final ZLBooleanOption myOption;
+	private final String myOptionGroup;
 
 	ZLBooleanPreference(Context context, ZLBooleanOption option, ZLResource resource) {
 		super(context, resource);
 		myOption = option;
+		myOptionGroup = getOptionGroupName(option);
 		setChecked(option.getValue());
+	}
+
+	private String getOptionGroupName(ZLBooleanOption option) {
+		try {
+			java.lang.reflect.Field field = option.getClass().getSuperclass().getDeclaredField("myId");
+			field.setAccessible(true);
+			Object stringPair = field.get(option);
+			java.lang.reflect.Field groupField = stringPair.getClass().getDeclaredField("Group");
+			groupField.setAccessible(true);
+			String group = (String) groupField.get(stringPair);
+			java.lang.reflect.Field nameField = stringPair.getClass().getDeclaredField("Name");
+			nameField.setAccessible(true);
+			String name = (String) nameField.get(stringPair);
+			return group + "::" + name;
+		} catch (Exception e) {
+			return "";
+		}
 	}
 
 	@Override
 	protected void onClick() {
 		super.onClick();
-		myOption.setValue(isChecked());
+		final boolean newValue = isChecked();
+		final boolean oldValue = myOption.getValue();
+		myOption.setValue(newValue);
+
+		// 水墨屏主题切换时，重建并返回到 PreferenceActivity 主页面
+		if (newValue != oldValue && "LookNFeel::InkTheme".equals(myOptionGroup)) {
+			if (getContext() instanceof android.app.Activity) {
+				android.app.Activity activity = (android.app.Activity) getContext();
+				activity.recreate();
+				activity.finish();
+			}
+		}
 	}
 }

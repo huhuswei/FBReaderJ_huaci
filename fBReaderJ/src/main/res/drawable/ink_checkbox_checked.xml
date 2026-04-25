@@ -1,0 +1,6 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/ink_background" />
+    <stroke android:width="2dp" android:color="@color/ink_text" />
+    <size android:width="20dp" android:height="20dp" />
+    <!-- 内部对勾可以用 path 或直接使用文字，这里简化 -->
+</shape>

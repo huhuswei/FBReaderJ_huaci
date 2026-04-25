@@ -34,6 +34,7 @@ import android.util.DisplayMetrics;
 import android.view.*;
 import android.widget.*;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
 import org.geometerplus.zlibrary.core.filesystem.ZLPhysicalFile;
 import org.geometerplus.zlibrary.core.image.ZLImage;
@@ -76,7 +77,7 @@ public class BookInfoActivity extends Activity implements MenuItem.OnMenuItemCli
 	protected void onCreate(Bundle icicle) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 
 		super.onCreate(icicle);

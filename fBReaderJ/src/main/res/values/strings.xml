@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">FBReader</string>
+	<string name="inkTheme">水墨屏主题</string>
+	<string name="defaultTheme">默认主题</string>
 	<string name="empty_string"></string>
 	<string name="scan_local_network_menu_item">Scan local network</string>
 	<string name="local_ip_menu_item">Enter local IP</string>
@@ -15,6 +17,18 @@
 	<string name="port_label">Port:</string>
 	<string name="button_ok">Ok</string>
 	<string name="button_cancel">Cancel</string>
+
+	<!-- 权限提示相关 -->
+	<string name="permission_denied">权限被拒绝，部分功能可能无法使用</string>
+
+	<!-- 存储权限 -->
+	<string name="permission_storage_title">存储权限</string>
+	<string name="permission_storage_message">FBReader需要访问存储权限来读取和管理您书架中的书籍文件。请授权以继续使用。</string>
+
+	<!-- 通知权限 -->
+	<string name="permission_notification_title">通知权限</string>
+	<string name="permission_notification_message">FBReader需要通知权限来推送书籍更新和同步提醒。请授权以获取最佳体验。</string>
+
 	<string name="button_rescan">Rescan</string>
 	<string name="button_turn_on">Turn on</string>
 </resources>

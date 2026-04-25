@@ -32,6 +32,7 @@ import android.util.DisplayMetrics;
 import android.view.*;
 import android.widget.*;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.image.ZLImage;
 import org.geometerplus.zlibrary.core.image.ZLImageProxy;
 import org.geometerplus.zlibrary.core.network.ZLNetworkException;
@@ -75,7 +76,7 @@ public class NetworkBookInfoActivity extends Activity implements NetworkLibrary.
 	protected void onCreate(Bundle icicle) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 
 		super.onCreate(icicle);

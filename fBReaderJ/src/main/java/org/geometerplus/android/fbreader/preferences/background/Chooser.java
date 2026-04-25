@@ -21,6 +21,7 @@ package org.geometerplus.android.fbreader.preferences.background;
 
 import java.util.List;
 
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import org.geometerplus.zlibrary.ui.android.util.ZLAndroidColorUtil;
 import org.geometerplus.fbreader.Paths;
 
 import org.geometerplus.android.util.FileChooserUtil;
+import org.geometerplus.android.util.InkThemeUtil;
 
 public class Chooser extends ListActivity implements AdapterView.OnItemClickListener {
 	private final ZLResource myResource = ZLResource.resource("Preferences").getResource("colors").getResource("background");
@@ -46,7 +48,7 @@ public class Chooser extends ListActivity implements AdapterView.OnItemClickList
 	protected void onCreate(Bundle savedInstanceState) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 
 		super.onCreate(savedInstanceState);
@@ -87,11 +89,14 @@ public class Chooser extends ListActivity implements AdapterView.OnItemClickList
 		switch (position) {
 			case 0:
 			{
-				new AmbilWarnaDialog(
+				Dialog dialog = new AmbilWarnaDialog(
 					this,
 					getIntent().getIntExtra(BackgroundPreference.COLOR_KEY, 0),
 					myColorChooserListener
-				).show();
+				).getDialog();
+				dialog.show();
+				// 应用水墨屏主题到颜色选择对话框
+				InkThemeUtil.applyInkThemeToDialog(dialog, this);
 				break;
 			}
 			case 1:

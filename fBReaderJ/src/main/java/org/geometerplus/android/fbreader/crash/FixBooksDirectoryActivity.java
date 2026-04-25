@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.options.Config;
 import org.geometerplus.zlibrary.core.options.ZLStringOption;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
@@ -44,7 +45,7 @@ public class FixBooksDirectoryActivity extends Activity {
 	protected void onCreate(Bundle bundle) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 
 		super.onCreate(bundle);

@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.application.ZLApplication;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.tree.ZLTree;
@@ -47,7 +48,7 @@ public class TOCActivity extends ListActivity {
 	public void onCreate(Bundle bundle) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 
 		super.onCreate(bundle);
@@ -72,6 +73,10 @@ public class TOCActivity extends ListActivity {
 		TOCTree treeToSelect = fbreader.getCurrentTOCElement();
 		myAdapter.selectItem(treeToSelect);
 		mySelectedItem = treeToSelect;
+
+		final ListView listView = getListView();
+		listView.setDivider(getResources().getDrawable(R.drawable.list_divider));
+		listView.setDividerHeight(1);
 	}
 
 	@Override
@@ -125,7 +130,8 @@ public class TOCActivity extends ListActivity {
 			final View view = (convertView != null) ? convertView :
 				LayoutInflater.from(parent.getContext()).inflate(R.layout.toc_tree_item, parent, false);
 			final TOCTree tree = (TOCTree)getItem(position);
-			int inkDividerColor = getColor(R.color.ink_divider);
+			final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
+			int inkDividerColor = getColor(zlibrary.InkThemeOption.getValue() ? R.color.ink_divider : R.color.afc_ink_divider);
 			view.setBackgroundColor(tree == mySelectedItem ? inkDividerColor : 0);
 			setIcon(ViewUtil.findImageView(view, R.id.toc_tree_item_icon), tree);
 			ViewUtil.findTextView(view, R.id.toc_tree_item_text).setText(tree.getText());

@@ -44,11 +44,13 @@ import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.view.ZLViewWidget;
 
 import org.geometerplus.zlibrary.text.view.ZLTextFixedPosition;
+import org.geometerplus.zlibrary.text.view.ZLTextPosition;
 import org.geometerplus.zlibrary.text.view.ZLTextRegion;
 import org.geometerplus.zlibrary.text.view.ZLTextView;
 
 import org.geometerplus.zlibrary.ui.android.R;
 import org.geometerplus.zlibrary.ui.android.error.ErrorKeys;
+import org.geometerplus.android.fbreader.PermissionHelper;
 import org.geometerplus.zlibrary.ui.android.library.ZLAndroidApplication;
 import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 import org.geometerplus.zlibrary.ui.android.view.AndroidFontUtil;
@@ -93,6 +95,7 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 
 	private FBReaderApp myFBReaderApp;
 	private volatile Book myBook;
+	private Boolean myPendingInkTheme;
 
 	private RelativeLayout myRootView;
 	private ZLAndroidWidget myMainView;
@@ -107,6 +110,7 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 	private volatile long myResumeTimestamp;
 	volatile Runnable OnResumeAction = null;
 	public String jump_intent_id = "";
+	public String jump_intent_note = "";
 	public int jump_intent_position_char_end;
 	public int jump_intent_position_char_start;
 	public int jump_intent_position_element_end;
@@ -149,8 +153,20 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		}
 	};
 
+	private Intent myPendingOpenBookIntent;
+	private Runnable myPendingOpenBookAction;
+
 	private synchronized void openBook(Intent intent, final Runnable action, boolean force) {
 		if (!force && myBook != null) {
+			return;
+		}
+
+		// 检查存储权限
+		if (!PermissionHelper.Storage.isGranted(this)) {
+			// 保存pending的intent和action，等权限授权后再打开
+			myPendingOpenBookIntent = intent;
+			myPendingOpenBookAction = action;
+			PermissionHelper.Storage.showStoragePermissionDialog(this);
 			return;
 		}
 
@@ -196,16 +212,27 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 				} else if (FBReader.this.myBook == null || FBReader.this.myFBReaderApp == null || FBReader.this.myFBReaderApp.Model == null || FBReader.this.myFBReaderApp.Model.Book == null || !FBReader.this.myFBReaderApp.Collection.sameBook(FBReader.this.myBook, FBReader.this.myFBReaderApp.Model.Book)) {
 					FBReader.this.myFBReaderApp.openBook(FBReader.this.myBook, bookmark, new Runnable() {
 						public void run() {
-							FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, 0, 0);
-							FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
-							FBReader.this.myFBReaderApp.getViewWidget().repaint();
+							if (jump_intent_note != null && !jump_intent_note.isEmpty()) {
+								// 创建带笔记的书签
+								FBReader.this.createNoteBookmarkIfNeeded();
+							} else {
+								FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, 0, 0);
+								FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
+								FBReader.this.myFBReaderApp.getViewWidget().repaint();
+							}
 							Log.d("jump_intent", "jump");
 						}
 					}, FBReader.this.myNotifier);
 				} else {
-					FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
-					FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
-					FBReader.this.myFBReaderApp.getViewWidget().repaint();
+					if (jump_intent_note != null && !jump_intent_note.isEmpty()) {
+						// 创建带笔记的书签（使用Intent中的位置）
+						// 创建带笔记的书签
+						FBReader.this.createNoteBookmarkIfNeeded();
+					} else {
+						FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
+						FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
+						FBReader.this.myFBReaderApp.getViewWidget().repaint();
+					}
 				}
 				AndroidFontUtil.clearFontCache();
 			}
@@ -253,14 +280,31 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		final ZLAndroidLibrary zlibrary = getZLibrary();
 		final boolean inkTheme = zlibrary.InkThemeOption.getValue();
 		if (inkTheme) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 
 		super.onCreate(icicle);
 
-		// 水墨屏主题下设置状态栏颜色
-		if (inkTheme && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			getWindow().setStatusBarColor(getResources().getColor(R.color.ink_background, getTheme()));
+		// 根据主题设置状态栏颜色和背景色
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+			if (inkTheme) {
+				// 水墨屏主题：背景白色，字体黑色
+				getWindow().setStatusBarColor(getResources().getColor(R.color.ink_background, getTheme()));
+				// 水墨屏主题：设置状态栏图标和文本为黑色，使用 LAYOUT_STABLE 保持布局稳定
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && zlibrary.ShowStatusBarOption.getValue()) {
+					getWindow().getDecorView().setSystemUiVisibility(
+						View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+				}
+			} else {
+				// 普通主题：背景黑色，字体白色
+				getWindow().setStatusBarColor(getResources().getColor(R.color.normal_background, getTheme()));
+				// 普通主题：清除深色状态栏设置（保留其他系统UI标志）
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+					getWindow().getDecorView().setSystemUiVisibility(
+						View.SYSTEM_UI_FLAG_LAYOUT_STABLE | (getWindow().getDecorView().getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
+				}
+			}
 		}
 
 		bindService(
@@ -295,12 +339,25 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		setContentView(R.layout.main);
 		myRootView = (RelativeLayout)findViewById(R.id.root_view);
 		myMainView = (ZLAndroidWidget)findViewById(R.id.main_view);
+
+		// 设置根布局背景色，根据主题变化
+		if (inkTheme) {
+			myRootView.setBackgroundColor(getResources().getColor(R.color.ink_background, getTheme()));
+		} else {
+			myRootView.setBackgroundColor(getResources().getColor(R.color.normal_background, getTheme()));
+		}
 		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
 		myFBReaderApp = (FBReaderApp)FBReaderApp.Instance();
 		if (myFBReaderApp == null) {
 			myFBReaderApp = new FBReaderApp(Paths.systemInfo(this), new BookCollectionShadow());
 		}
+
+		// 根据水墨屏主题设置阅读器颜色配置
+		final String targetProfile = inkTheme ? ColorProfile.INK : ColorProfile.DAY;
+		Config.Instance().setSpecialStringValue("colorProfile", targetProfile);
+		myFBReaderApp.ViewOptions.ColorProfileName.setValue(targetProfile);
+
 		getCollection().bindToService(this, null);
 		myBook = null;
 
@@ -371,8 +428,8 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		myFBReaderApp.addAction(ActionCode.OPEN_WEB_HELP, new OpenWebHelpAction(this, myFBReaderApp));
 		myFBReaderApp.addAction(ActionCode.INSTALL_PLUGINS, new InstallPluginsAction(this, myFBReaderApp));
 
-		myFBReaderApp.addAction(ActionCode.SWITCH_TO_DAY_PROFILE, new SwitchProfileAction(this, myFBReaderApp, ColorProfile.DAY));
-		myFBReaderApp.addAction(ActionCode.SWITCH_TO_NIGHT_PROFILE, new SwitchProfileAction(this, myFBReaderApp, ColorProfile.NIGHT));
+		myFBReaderApp.addAction(ActionCode.SWITCH_TO_DAY_PROFILE, new SwitchProfileAction(this, myFBReaderApp, inkTheme ? ColorProfile.INK : ColorProfile.DAY));
+		myFBReaderApp.addAction(ActionCode.SWITCH_TO_NIGHT_PROFILE, new SwitchProfileAction(this, myFBReaderApp, inkTheme ? ColorProfile.INK_NIGHT : ColorProfile.NIGHT));
 
 		myFBReaderApp.addAction(ActionCode.YOTA_SWITCH_TO_BACK_SCREEN, new YotaSwitchScreenAction(this, myFBReaderApp, true));
 		myFBReaderApp.addAction(ActionCode.YOTA_SWITCH_TO_FRONT_SCREEN, new YotaSwitchScreenAction(this, myFBReaderApp, false));
@@ -381,16 +438,26 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 			public void run() {
 				if (FBReader.this.on_jump_intent && FBReader.this.myBook != null) {
 					if (FBReader.this.myFBReaderApp.Collection.sameBook(FBReader.this.myBook, FBReader.this.myFBReaderApp.Model.Book)) {
-						FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
-						FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
-						FBReader.this.myFBReaderApp.getViewWidget().repaint();
+						if (jump_intent_note != null && !jump_intent_note.isEmpty()) {
+							// 创建带笔记的书签
+							FBReader.this.createNoteBookmarkIfNeeded();
+						} else {
+							FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
+							FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
+							FBReader.this.myFBReaderApp.getViewWidget().repaint();
+						}
 					} else {
 						FBReader.this.myFBReaderApp.openBook(FBReader.this.myBook, null, new Runnable() {
 							public void run() {
+								if (jump_intent_note != null && !jump_intent_note.isEmpty()) {
+									// 创建带笔记的书签
+									FBReader.this.createNoteBookmarkIfNeeded();
+								} else {
 								FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
 								FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
 								FBReader.this.myFBReaderApp.getViewWidget().repaint();
 								Log.d("jump_intent", "jump");
+								}
 							}
 						}, FBReader.this.myNotifier);
 					}
@@ -430,16 +497,26 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 				public void run() {
 					if (FBReader.this.on_jump_intent && FBReader.this.myBook != null) {
 						if (FBReader.this.myFBReaderApp.Collection.sameBook(FBReader.this.myBook, FBReader.this.myFBReaderApp.Model.Book)) {
-							FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
-							FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
-							FBReader.this.myFBReaderApp.getViewWidget().repaint();
+							if (jump_intent_note != null && !jump_intent_note.isEmpty()) {
+								// 创建带笔记的书签
+								FBReader.this.createNoteBookmarkIfNeeded();
+							} else {
+								FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
+								FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
+								FBReader.this.myFBReaderApp.getViewWidget().repaint();
+							}
 						} else {
 							FBReader.this.myFBReaderApp.openBook(FBReader.this.myBook, null, new Runnable() {
 								public void run() {
-									FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
-									FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
-									FBReader.this.myFBReaderApp.getViewWidget().repaint();
-									Log.d("jump_intent", "jump");
+									if (jump_intent_note != null && !jump_intent_note.isEmpty()) {
+										// 创建带笔记的书签
+										FBReader.this.createNoteBookmarkIfNeeded();
+									} else {
+										FBReader.this.myFBReaderApp.BookTextView.gotoPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start);
+										FBReader.this.myFBReaderApp.BookTextView.highlight(new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_start, FBReader.this.jump_intent_position_element_start, FBReader.this.jump_intent_position_char_start), new ZLTextFixedPosition(FBReader.this.jump_intent_position_paragraph_end, FBReader.this.jump_intent_position_element_end, FBReader.this.jump_intent_position_char_end));
+										FBReader.this.myFBReaderApp.getViewWidget().repaint();
+										Log.d("jump_intent", "jump");
+									}
 								}
 							}, FBReader.this.myNotifier);
 						}
@@ -619,8 +696,19 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 
 	@Override
 	protected void onResume() {
+		// 检测水墨屏主题变化并自动重建 Activity
 		super.onResume();
-		if (this.on_jump_intent) {
+
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		final boolean currentInkTheme = zlibrary.InkThemeOption.getValue();
+		if (myPendingInkTheme == null) {
+			myPendingInkTheme = currentInkTheme;
+		} else if (myPendingInkTheme != currentInkTheme) {
+			myPendingInkTheme = currentInkTheme;
+			recreate();
+		}
+
+		if (this.on_jump_intent && (this.jump_intent_note == null || this.jump_intent_note.isEmpty())) {
 			showJumpToast();
 		}
 		myStartTimer = true;
@@ -707,12 +795,47 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		ApiServerImplementation.sendEvent(this, ApiListener.EVENT_READ_MODE_OPENED);
 	}
 
+	// 创建带笔记的书签
+	private void createNoteBookmarkIfNeeded() {
+		if (this.jump_intent_note == null || this.jump_intent_note.isEmpty()) {
+			return;
+		}
+		if (this.myFBReaderApp == null || this.myFBReaderApp.Model == null || this.myFBReaderApp.Model.Book == null) {
+			return;
+		}
+		ZLTextFixedPosition startPos = new ZLTextFixedPosition(
+			this.jump_intent_position_paragraph_start,
+			this.jump_intent_position_element_start,
+			this.jump_intent_position_char_start);
+		ZLTextFixedPosition endPos = new ZLTextFixedPosition(
+			this.jump_intent_position_paragraph_end,
+			this.jump_intent_position_element_end,
+			this.jump_intent_position_char_end);
+		final ZLTextFixedPosition finalStartPos = startPos;
+		final ZLTextFixedPosition finalEndPos = endPos;
+		org.geometerplus.fbreader.util.TextSnippet noteSnippet = new org.geometerplus.fbreader.util.TextSnippet() {
+			public ZLTextPosition getStart() { return finalStartPos; }
+			public ZLTextPosition getEnd() { return finalEndPos; }
+			public String getText() { return FBReader.this.jump_intent_note; }
+		};
+		Bookmark noteBookmark = new Bookmark(
+			this.myFBReaderApp.Collection,
+			this.myFBReaderApp.Model.Book,
+			this.myFBReaderApp.BookTextView.getModel().getId(),
+			noteSnippet, true);
+		this.myFBReaderApp.Collection.saveBookmark(noteBookmark);
+		Log.d("jump_intent", "bookmark created: " + this.jump_intent_note);
+	}
+
 	private void parseJumpIntent(Intent intent) {
 		this.on_jump_intent = true;
-		this.myFBReaderApp.setOnJumpIntent(true);
-		showJumpToast();
-		String type = intent.getStringExtra("TYPE");
-		String id = intent.getStringExtra("ID");
+		String note = intent.getStringExtra("NOTE");
+		this.jump_intent_note = note != null ? note : "";
+		// 只有没有 NOTE 时才设置 onJumpIntent（回链模式）
+		if (this.jump_intent_note.isEmpty()) {
+			this.myFBReaderApp.setOnJumpIntent(true);
+			showJumpToast();
+		}
 		try {
 			String stringExtra = intent.getStringExtra("POSITION");
 			if (stringExtra != null) {
@@ -728,6 +851,8 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 			}
 		} catch (NumberFormatException e) {
 		}
+		String type = intent.getStringExtra("TYPE");
+		String id = intent.getStringExtra("ID");
 		if (id != null && type != null) {
 			this.jump_intent_id = id;
 			this.jump_intent_type = type;
@@ -861,6 +986,28 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		}
 	}
 
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		switch (requestCode) {
+			case PermissionHelper.Storage.REQUEST_CODE:
+				if (PermissionHelper.isPermissionGranted(grantResults)) {
+					// 存储权限授权成功，重新打开书籍
+					if (myPendingOpenBookIntent != null) {
+						openBook(myPendingOpenBookIntent, myPendingOpenBookAction, true);
+						myPendingOpenBookIntent = null;
+						myPendingOpenBookAction = null;
+					}
+				} else {
+					// 权限被拒绝，提示用户
+					Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+					myPendingOpenBookIntent = null;
+					myPendingOpenBookAction = null;
+				}
+				break;
+		}
+	}
+
 	private void runCancelAction(Intent intent) {
 		final CancelMenuHelper.ActionType type;
 		try {
@@ -933,6 +1080,10 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 	private void setupMenu(Menu menu) {
 		fillMenu(menu, MenuData.topLevelNodes());
 
+		// 水墨屏主题选项（根据当前状态显示不同名称）
+		final boolean currentInkTheme = getZLibrary().InkThemeOption.getValue();
+		MenuItem inkItem = menu.add(0, 1001, 0, currentInkTheme ? R.string.defaultTheme : R.string.inkTheme);
+
 		synchronized (myPluginActions) {
 			int index = 0;
 			for (PluginApi.ActionInfo info : myPluginActions) {
@@ -958,6 +1109,18 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		return true;
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == 1001) {
+			// 切换水墨屏主题
+			boolean newValue = !getZLibrary().InkThemeOption.getValue();
+			getZLibrary().InkThemeOption.setValue(newValue);
+			recreate();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 	protected void onPluginNotFound(final Book book) {
 		final BookCollectionShadow collection = getCollection();
 		collection.bindToService(this, new Runnable() {
@@ -976,11 +1139,59 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		final ZLAndroidLibrary zlibrary = getZLibrary();
 		if (DeviceType.Instance() != DeviceType.KINDLE_FIRE_1ST_GENERATION && !myShowStatusBarFlag) {
 			myMainView.setPreserveSize(visible);
+			// 获取当前是否为水墨屏主题
+			final boolean inkTheme = zlibrary.InkThemeOption.getValue();
 			if (visible) {
 				getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 				getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+				// 恢复正常状态栏
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+					getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+					getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent, getTheme()));
+					// 根据主题设置状态栏图标颜色
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+						if (inkTheme && zlibrary.ShowStatusBarOption.getValue()) {
+							// 使用 LAYOUT_STABLE 保持布局稳定，防止内容下移
+							myRootView.setSystemUiVisibility(
+								View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_VISIBLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+						} else {
+							myRootView.setSystemUiVisibility(
+								View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_VISIBLE);
+						}
+					} else {
+						myRootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_VISIBLE);
+					}
+				} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+					getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+					myRootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+				}
+				getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 			} else {
-				getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+				// 全屏模式下让状态栏背景显示为阅读器背景色
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+					getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+					// 根据水墨屏主题选择不同的背景色
+					if (inkTheme) {
+						// 水墨屏主题：背景白色，字体黑色
+						getWindow().setStatusBarColor(getResources().getColor(R.color.ink_background, getTheme()));
+						// 水墨屏主题：设置状态栏图标和文本为黑色
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && zlibrary.ShowStatusBarOption.getValue()) {
+							myRootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+						} else {
+							myRootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+						}
+					} else {
+						// 普通主题：背景黑色，字体白色
+						getWindow().setStatusBarColor(getResources().getColor(R.color.normal_background, getTheme()));
+						// 普通主题：清除深色状态栏设置
+                        myRootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+                    }
+				} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+					getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+					myRootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+				} else {
+					getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+				}
 				getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 			}
 		}
@@ -1016,7 +1227,20 @@ public final class FBReader extends FBReaderMainActivity implements ZLApplicatio
 		myActionBarIsVisible = true;
 		invalidateOptionsMenu();
 
-		myRootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+		// 根据主题设置状态栏图标颜色（使用 LAYOUT_STABLE 保持布局稳定，防止内容下移）
+		final ZLAndroidLibrary zlibrary = getZLibrary();
+		final boolean inkTheme = zlibrary.InkThemeOption.getValue();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && zlibrary.ShowStatusBarOption.getValue()) {
+			if (inkTheme) {
+				myRootView.setSystemUiVisibility(
+					View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_VISIBLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+			} else {
+				myRootView.setSystemUiVisibility(
+					View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_VISIBLE);
+			}
+		} else {
+			myRootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_VISIBLE);
+		}
 
 		if (myNavigationPopup == null) {
 			myFBReaderApp.hideActivePopup();

@@ -26,6 +26,7 @@ import android.widget.*;
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
 
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.fbreader.library.*;
 import org.geometerplus.fbreader.book.Book;
@@ -71,7 +72,13 @@ class LibraryTreeAdapter extends TreeAdapter {
 		final LibraryTree tree = (LibraryTree)getItem(position);
 		final View view = createView(convertView, parent, tree);
 		if (getActivity().isTreeSelected(tree)) {
-			view.setBackgroundColor(0xff555555);
+			// 水墨屏主题下使用较浅的选中颜色
+			final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+			if (zlibrary.InkThemeOption.getValue()) {
+				view.setBackgroundColor(0xffdddddd);
+			} else {
+				view.setBackgroundColor(0xff555555);
+			}
 		} else {
 			view.setBackgroundColor(0);
 		}

@@ -29,16 +29,18 @@ import android.preference.*;
 import org.geometerplus.zlibrary.core.options.*;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 
-import org.geometerplus.zlibrary.ui.android.R;
 import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 import org.geometerplus.zlibrary.ui.android.network.SQLiteCookieDatabase;
 
 import org.geometerplus.android.fbreader.OrientationUtil;
+import org.geometerplus.android.util.InkThemeUtil;
 
-abstract class ZLPreferenceActivity extends android.preference.PreferenceActivity {
+public abstract class ZLPreferenceActivity extends android.preference.PreferenceActivity {
 	public static String SCREEN_KEY = "screen";
 
 	private final HashMap<String,Screen> myScreenMap = new HashMap<String,Screen>();
+	private Boolean myPendingInkTheme;
+	private boolean myIsInkTheme;
 
 	protected class Screen {
 		public final ZLResource Resource;
@@ -134,11 +136,27 @@ abstract class ZLPreferenceActivity extends android.preference.PreferenceActivit
 	@Override
 	protected void onCreate(Bundle bundle) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
-		if (zlibrary != null && zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+		myIsInkTheme = zlibrary != null && zlibrary.InkThemeOption.getValue();
+		if (myIsInkTheme) {
+			InkThemeUtil.applyInkThemeToActivity(this);
+		}
+
+		// 保存主题状态
+		if (zlibrary != null) {
+			myPendingInkTheme = zlibrary.InkThemeOption.getValue();
 		}
 
 		super.onCreate(bundle);
+
+		// 水墨屏主题：设置 Preference 列表背景和文字颜色
+		if (myIsInkTheme) {
+			final android.widget.ListView listView = getListView();
+			if (listView != null) {
+				listView.setBackgroundColor(getResources().getColor(org.geometerplus.zlibrary.ui.android.R.color.ink_background));
+				listView.setCacheColorHint(getResources().getColor(org.geometerplus.zlibrary.ui.android.R.color.ink_background));
+				listView.setDivider(getResources().getDrawable(org.geometerplus.zlibrary.ui.android.R.color.ink_divider));
+			}
+		}
 
 		Thread.setDefaultUncaughtExceptionHandler(new org.geometerplus.zlibrary.ui.android.library.UncaughtExceptionHandler(this));
 
@@ -161,6 +179,12 @@ abstract class ZLPreferenceActivity extends android.preference.PreferenceActivit
 				init(intent);
 				final Screen screen = myScreenMap.get(screenId);
 				setPreferenceScreen(screen != null ? screen.myScreen : myScreen);
+				// 水墨屏主题：在 PreferenceScreen 设置完成后应用样式
+				// 使用 post() 延迟执行确保视图完全加载
+				if (myIsInkTheme) {
+					applyInkThemeToPreferences();
+					applyInkThemeToDialogs();
+				}
 			}
 		});
 	}
@@ -172,7 +196,50 @@ abstract class ZLPreferenceActivity extends android.preference.PreferenceActivit
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+
+		// 检测水墨屏主题变化并重建 Activity
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary != null) {
+			final boolean currentInkTheme = zlibrary.InkThemeOption.getValue();
+			if (myPendingInkTheme == null) {
+				myPendingInkTheme = currentInkTheme;
+			} else if (myPendingInkTheme != currentInkTheme) {
+				myPendingInkTheme = currentInkTheme;
+				// 主题变化时必须 recreate 才能正确应用新主题
+				recreate();
+			}
+		}
+
+		// 水墨屏主题：应用样式到 Preference 列表
+		// 使用延迟执行确保视图完全渲染
+		if (myIsInkTheme) {
+			applyInkThemeToPreferences();
+			applyInkThemeToDialogs();
+		}
+	}
+
+	@Override
 	protected void onNewIntent(Intent intent) {
 		OrientationUtil.setOrientation(this, intent);
+	}
+
+	// 公共方法：应用水墨屏主题到对话框
+	public static void applyInkThemeToDialog(android.app.Dialog dialog, android.content.Context context) {
+		InkThemeUtil.applyInkThemeToDialog(dialog, context);
+	}
+
+	// 水墨屏主题：为所有 Preference 组件应用水墨风格
+	private void applyInkThemeToPreferences() {
+		InkThemeUtil.applyInkThemeToPreferences(this);
+	}
+
+	// 水墨屏主题：应用样式到对话框
+	private void applyInkThemeToDialogs() {
+		if (!myIsInkTheme) {
+			return;
+		}
+		InkThemeUtil.applyInkThemeToDialogs(this);
 	}
 }

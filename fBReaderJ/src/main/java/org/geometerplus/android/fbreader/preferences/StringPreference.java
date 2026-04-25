@@ -33,6 +33,7 @@ import android.widget.*;
 import org.geometerplus.zlibrary.core.options.ZLStringOption;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public class StringPreference extends DialogPreference {
 	public static class Constraint {
@@ -123,6 +124,12 @@ public class StringPreference extends DialogPreference {
         myEditor.removeTextChangedListener(myWatcher);
         myEditor.addTextChangedListener(myWatcher);
         myWatcher.afterTextChanged(null);
+
+        // 使用通用方法应用水墨屏主题
+        android.app.Dialog dialog = getDialog();
+        if (dialog != null) {
+            ZLPreferenceActivity.applyInkThemeToDialog(dialog, getContext());
+        }
     }
 
 	@Override

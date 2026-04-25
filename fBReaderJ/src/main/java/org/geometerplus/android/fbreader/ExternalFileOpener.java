@@ -25,6 +25,7 @@ import java.util.Random;
 import android.app.AlertDialog;
 import android.content.*;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.options.Config;
 import org.geometerplus.zlibrary.core.options.ZLStringOption;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
@@ -55,7 +56,7 @@ class ExternalFileOpener implements FBReaderApp.ExternalFileOpener {
 			myDialog = null;
 		}
 
-		final Intent intent = PluginUtil.createIntent(plugin, FBReaderIntents.Action.PLUGIN_VIEW);
+		final Intent intent = PluginUtil.createViewIntent(plugin);
 		FBReaderIntents.putBookExtra(intent, book);
 		FBReaderIntents.putBookmarkExtra(intent, bookmark);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -87,6 +88,7 @@ class ExternalFileOpener implements FBReaderApp.ExternalFileOpener {
 		final AlertDialog.Builder builder;
 		if (zlibrary.InkThemeOption.getValue()) {
 			builder = new AlertDialog.Builder(myReader, R.style.FBReader_Dialog_Ink);
+
 		} else {
 			builder = new AlertDialog.Builder(myReader);
 		}

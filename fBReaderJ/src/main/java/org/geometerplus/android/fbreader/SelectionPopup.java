@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import org.geometerplus.fbreader.fbreader.ActionCode;
 import org.geometerplus.fbreader.fbreader.FBReaderApp;
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 class SelectionPopup extends PopupPanel implements View.OnClickListener {
 	final static String ID = "SelectionPopup";
@@ -43,8 +44,12 @@ class SelectionPopup extends PopupPanel implements View.OnClickListener {
 		if (myWindow != null && activity == myWindow.getContext()) {
 			return;
 		}
-
-		activity.getLayoutInflater().inflate(R.layout.selection_panel, root);
+		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			activity.getLayoutInflater().inflate(R.layout.selection_panel_ink, root);
+		} else {
+			activity.getLayoutInflater().inflate(R.layout.selection_panel, root);
+		}
 		myWindow = (SimplePopupWindow)root.findViewById(R.id.selection_panel);
 
 		setupButton(R.id.selection_panel_copy);

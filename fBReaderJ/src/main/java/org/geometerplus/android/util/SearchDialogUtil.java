@@ -38,13 +38,15 @@ public abstract class SearchDialogUtil {
 
 	public static void showDialog(final Activity activity, final Class<? extends Activity> clazz, final String initialPattern, DialogInterface.OnCancelListener listener, final Bundle bundle) {
 		// 检查水墨屏主题
-		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+//		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
 		final AlertDialog.Builder builder;
-		if (zlibrary.InkThemeOption.getValue()) {
-			builder = new AlertDialog.Builder(activity, R.style.FBReader_Dialog_Ink);
-		} else {
-			builder = new AlertDialog.Builder(activity);
-		}
+//		if (zlibrary.InkThemeOption.getValue()) {
+//			builder = new AlertDialog.Builder(activity, R.style.FBReader_Dialog_Ink);
+//		} else {
+//			builder = new AlertDialog.Builder(activity);
+//		}
+
+		builder = new AlertDialog.Builder(activity);
 
 		builder.setTitle(ZLResource.resource("menu").getResource("search").getValue());
 

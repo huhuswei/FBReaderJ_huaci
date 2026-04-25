@@ -75,6 +75,11 @@ public abstract class FBReaderIntents {
 		String BOOKMARK                         = "fbreader.bookmark";
 		String PLUGIN                           = "fbreader.plugin";
 		String TYPE                             = "fbreader.type";
+		// 插件专用：传递外部书籍信息给插件
+		String PLUGIN_BOOK                       = "fbreader.plugin.book";
+		String PLUGIN_BOOK_TITLE                = "fbreader.plugin.book.title";
+		String PLUGIN_BOOK_FILE                = "fbreader.plugin.book.file";
+		String PLUGIN_BOOK_HASH             = "fbreader.plugin.book.hash";
 	}
 
 	public static Intent defaultInternalIntent(String action) {

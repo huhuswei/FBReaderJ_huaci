@@ -135,7 +135,7 @@ public class AndroidImageSynchronizer implements ZLImageProxy.Synchronizer {
 			connection = new Connection(plugin);
 			myConnections.put(plugin, connection);
 			myContext.bindService(
-				PluginUtil.createIntent(plugin, FBReaderIntents.Action.PLUGIN_CONNECT_COVER_SERVICE),
+				PluginUtil.createCoverServiceIntent(plugin),
 				connection,
 				Context.BIND_AUTO_CREATE
 			);

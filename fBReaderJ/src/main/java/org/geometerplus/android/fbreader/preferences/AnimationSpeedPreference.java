@@ -19,18 +19,21 @@
 
 package org.geometerplus.android.fbreader.preferences;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.*;
 import android.graphics.drawable.*;
+import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.view.View;
 import android.widget.SeekBar;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.options.ZLIntegerRangeOption;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
-
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 class AnimationSpeedPreference extends DialogPreference {
 	private final ZLIntegerRangeOption myOption;
@@ -50,6 +53,16 @@ class AnimationSpeedPreference extends DialogPreference {
 		final ZLResource buttonResource = ZLResource.resource("dialog").getResource("button");
 		setPositiveButtonText(buttonResource.getResource("ok").getValue());
 		setNegativeButtonText(buttonResource.getResource("cancel").getValue());
+	}
+
+	@Override
+	protected void showDialog(Bundle state) {
+		super.showDialog(state);
+		// 使用通用方法应用水墨屏主题
+		android.app.Dialog dialog = getDialog();
+		if (dialog != null) {
+			ZLPreferenceActivity.applyInkThemeToDialog(dialog, getContext());
+		}
 	}
 
 	@Override

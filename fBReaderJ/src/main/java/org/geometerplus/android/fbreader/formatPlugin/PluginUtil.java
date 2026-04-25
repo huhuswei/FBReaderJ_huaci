@@ -24,7 +24,35 @@ import android.content.Intent;
 import org.geometerplus.fbreader.formats.ExternalFormatPlugin;
 
 public abstract class PluginUtil {
+	public static final String ACTION_VIEW = "android.fbreader.action.plugin.VIEW";
+	public static final String ACTION_KILL = "android.fbreader.action.plugin.KILL";
+	public static final String ACTION_CONNECT_COVER_SERVICE = "android.fbreader.action.plugin.CONNECT_COVER_SERVICE";
+
 	public static Intent createIntent(ExternalFormatPlugin plugin, String action) {
 		return new Intent(action).setPackage(plugin.packageName());
+	}
+
+	/**
+	 * Create intent for plugin view action, trying newest API version first
+	 */
+	public static Intent createViewIntent(ExternalFormatPlugin plugin) {
+		// Try V2_2 first (newest)
+		return createIntent(plugin, ACTION_VIEW);
+	}
+
+	/**
+	 * Create intent for plugin kill action, trying newest API version first
+	 */
+	public static Intent createKillIntent(ExternalFormatPlugin plugin) {
+		// Try V2_2 first (newest)
+		return createIntent(plugin, ACTION_KILL);
+	}
+
+	/**
+	 * Create intent for cover service connection, trying newest API version first
+	 */
+	public static Intent createCoverServiceIntent(ExternalFormatPlugin plugin) {
+		// Try V2_2 first (newest)
+		return createIntent(plugin, ACTION_CONNECT_COVER_SERVICE);
 	}
 }

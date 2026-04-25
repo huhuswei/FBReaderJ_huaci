@@ -23,10 +23,13 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.widget.*;
 import android.view.*;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.options.Config;
 
 import org.geometerplus.zlibrary.ui.android.R;
@@ -44,13 +47,16 @@ public class CancelActivity extends ListActivity {
 
 	@Override
 	protected void onCreate(Bundle icicle) {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Dialog_Ink);
+			this.setTheme(R.style.FBReader_Dialog_Ink);
+
+			getWindow().setBackgroundDrawableResource(R.drawable.ink_theme_dialog_background);
 		}
 
 		super.onCreate(icicle);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		FBReaderUtil.ensureFullscreen(this, getListView());
 	}
 

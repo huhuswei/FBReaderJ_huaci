@@ -35,6 +35,7 @@ import android.widget.*;
 
 import yuku.ambilwarna.widget.AmbilWarnaPrefWidgetView;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.options.ZLStringOption;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.util.ZLColor;
@@ -66,7 +67,8 @@ public class EditBookmarkActivity extends Activity implements IBookCollection.Li
 	public void onCreate(Bundle bundle) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			this.setTheme(R.style.FBReader_Dialog_Ink);
+			getWindow().setBackgroundDrawableResource(R.drawable.ink_theme_dialog_background);
 		}
 
 		super.onCreate(bundle);
@@ -118,6 +120,10 @@ public class EditBookmarkActivity extends Activity implements IBookCollection.Li
 		final Button saveTextButton = (Button)findViewById(R.id.edit_bookmark_save_text_button);
 		saveTextButton.setEnabled(false);
 		saveTextButton.setText(myResource.getResource("saveText").getValue());
+		if (zlibrary.InkThemeOption.getValue()) {
+			saveTextButton.setTextColor(getResources().getColor(R.color.ink_text_primary, getTheme()));
+			saveTextButton.setBackgroundResource(R.drawable.ink_button_background);
+		}
 		saveTextButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -148,6 +154,10 @@ public class EditBookmarkActivity extends Activity implements IBookCollection.Li
 
 		final Button deleteButton = (Button)findViewById(R.id.edit_bookmark_delete_button);
 		deleteButton.setText(myResource.getResource("deleteBookmark").getValue());
+		if (zlibrary.InkThemeOption.getValue()) {
+			deleteButton.setTextColor(getResources().getColor(R.color.ink_text_primary, getTheme()));
+			deleteButton.setBackgroundResource(R.drawable.ink_button_background);
+		}
 		deleteButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -245,6 +255,10 @@ public class EditBookmarkActivity extends Activity implements IBookCollection.Li
 
 			button.setVisibility(View.VISIBLE);
 			button.setText(myResource.getResource("editStyle").getValue());
+//			if (zlibrary.InkThemeOption.getValue()) {
+//				button.setTextColor(getResources().getColor(R.color.ink_text_primary, getTheme()));
+//				button.setBackgroundResource(R.drawable.ink_button_background);
+//			}
 			button.setOnClickListener(new Button.OnClickListener() {
 				@Override
 				public void onClick(View view) {

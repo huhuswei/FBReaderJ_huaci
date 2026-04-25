@@ -335,8 +335,15 @@ public class BuyBooksActivity extends SimpleDialogActivity implements NetworkLib
 					final ZLResource boxResource = dialogResource.getResource("networkError");
 					runOnUiThread(new Runnable() {
 						public void run() {
-							new AlertDialog.Builder(BuyBooksActivity.this)
-								.setTitle(boxResource.getResource("title").getValue())
+							// 水墨屏主题支持
+							AlertDialog.Builder builder;
+							ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+							if (zlibrary.InkThemeOption.getValue()) {
+								builder = new AlertDialog.Builder(BuyBooksActivity.this, R.style.FBReader_Dialog_Ink);
+							} else {
+								builder = new AlertDialog.Builder(BuyBooksActivity.this);
+							}
+							builder.setTitle(boxResource.getResource("title").getValue())
 								.setMessage(e.getMessage())
 								.setIcon(0)
 								.setPositiveButton(buttonResource.getResource("ok").getValue(), null)

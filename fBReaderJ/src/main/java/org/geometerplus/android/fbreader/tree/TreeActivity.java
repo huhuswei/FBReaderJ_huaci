@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.view.*;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.ui.android.R;
 import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
@@ -61,7 +62,7 @@ public abstract class TreeActivity<T extends FBTree> extends ListActivity {
 	protected void onCreate(Bundle icicle) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 
 		super.onCreate(icicle);

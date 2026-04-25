@@ -95,7 +95,8 @@ class DisplayBookPopupAction extends FBAndroidAction {
 
 		final View mainView = (View)BaseActivity.getViewWidget();
 		final View bookView = BaseActivity.getLayoutInflater().inflate(
-			ColorProfile.NIGHT.equals(Reader.ViewOptions.ColorProfileName.getValue())
+			ColorProfile.NIGHT.equals(Reader.ViewOptions.ColorProfileName.getValue())||
+                ColorProfile.INK_NIGHT.equals(Reader.ViewOptions.ColorProfileName.getValue())
 				? R.layout.book_popup_night : R.layout.book_popup,
 			null
 		);

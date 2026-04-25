@@ -55,6 +55,12 @@ public final class FBReaderApp extends ZLApplication {
 	public void setOnJumpIntent(boolean z) {
 		this.onJumpIntent = z;
 	}
+	public void setSkipStorePosition(boolean skip) {
+		this.skipStorePosition = skip;
+	}
+	public boolean isSkipStorePosition() {
+		return this.skipStorePosition;
+	}
 	public final MiscOptions MiscOptions = new MiscOptions();
 	public final ImageOptions ImageOptions = new ImageOptions();
 	public final ViewOptions ViewOptions = new ViewOptions();
@@ -77,6 +83,7 @@ public final class FBReaderApp extends ZLApplication {
 
 	private SyncData mySyncData = new SyncData();
 	private boolean onJumpIntent = false;
+	private boolean skipStorePosition = false;
 
 	public FBReaderApp(SystemInfo systemInfo, final IBookCollection<Book> collection) {
 		super(systemInfo);
@@ -354,6 +361,11 @@ public final class FBReaderApp extends ZLApplication {
 				bm = new Bookmark(Collection, book, "", new EmptyTextSnippet(pos), false);
 			}
 			myExternalFileOpener.openFile((ExternalFormatPlugin)plugin, book, bm);
+			// 添加插件书籍到recent列表
+			Collection.saveBook(book);
+			if (!onJumpIntent) {
+				Collection.addToRecentlyOpened(book);
+			}
 			return;
 		}
 
@@ -369,7 +381,10 @@ public final class FBReaderApp extends ZLApplication {
 			} else {
 				gotoBookmark(bookmark, false);
 			}
-			Collection.addToRecentlyOpened(book);
+			// 只有非跳转Intent才添加到最近打开
+			if (!onJumpIntent) {
+				Collection.addToRecentlyOpened(book);
+			}
 			final StringBuilder title = new StringBuilder(book.getTitle());
 			if (!book.authors().isEmpty()) {
 				boolean first = true;

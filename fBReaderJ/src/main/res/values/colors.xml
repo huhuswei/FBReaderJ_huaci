@@ -4,14 +4,41 @@
     <item name="primary" type="color">#222222</item>
     <item name="primary_dark" type="color">#111111</item>
 
+    <!-- 普通主题颜色（夜间模式默认） -->
+    <item name="normal_background" type="color">#ff000000</item>
+    <item name="normal_text" type="color">#ffffffff</item>
+    <item name="normal_text_secondary" type="color">#ffbbbbbb</item>
+    <item name="normal_background_secondary" type="color">#ff1a1a1a</item>
+    <item name="normal_icon" type="color">#ff888888</item>
+
     <!-- 水墨屏主题颜色 -->
-    <item name="ink_primary" type="color">#CCCCCC</item>
-    <item name="ink_primary_dark" type="color">#DDDDDD</item>
-    <item name="ink_background" type="color">#FFFFFF</item>
-    <item name="ink_text" type="color">#333333</item>
-    <item name="ink_text_secondary" type="color">#666666</item>
-    <item name="ink_divider" type="color">#CCCCCC</item>
-    <item name="ink_icon" type="color">#555555</item>
-    <item name="ink_highlight" type="color">#EEEEEE</item>
-    <item name="ink_edit" type="color">#F5F5F5</item>
+    <item name="ink_primary" type="color">#88444444</item>
+    <item name="ink_primary_dark" type="color">#ff222222</item>
+    <item name="ink_background" type="color">#ffffffff</item>
+    <item name="ink_background_secondary" type="color">#ffdddddd</item>
+    <item name="ink_text" type="color">#ff000000</item>
+    <item name="ink_text_secondary" type="color">#ff444444</item>
+    <item name="ink_text_primary" type="color">#ff000000</item>
+    <item name="ink_text_disabled" type="color">#ffaaaaaa</item>
+    <item name="ink_divider" type="color">#ffdddddd</item>
+    <item name="ink_icon" type="color">#ff555555</item>
+    <item name="ink_highlight" type="color">#ffeeeeee</item>
+    <item name="ink_edit" type="color">#ffdddddd</item>
+    <item name="ink_shadow" type="color">#ffbbbbbb</item>
+    <item name="ink_panel_bg" type="color">#ffffffff</item>
+    <item name="ink_book_progress" type="color">#ff444444</item>
+    <item name="ink_book_progress_bg" type="color">#ffaaaaaa</item>
+    <item name="ink_error" type="color">#ff000000</item>
+    <item name="ink_border" type="color">#ff808080</item>
+
+    <!-- 墨水屏颜色 -->
+<!--    <color name="ink_background">#F5F5F0</color>-->
+<!--    <color name="ink_text">#333333</color>-->
+<!--    <color name="ink_text_secondary">#666666</color>-->
+<!--    <color name="ink_primary">#555555</color>-->
+<!--    <color name="ink_primary_dark">#444444</color>-->
+<!--    <color name="ink_divider">#CCCCCC</color>-->
+<!--    <color name="ink_icon">#555555</color>-->
+    <color name="ink_pressed">#DDDDDD</color>
+    <color name="ink_selected">#BBBBBB</color>
 </resources>

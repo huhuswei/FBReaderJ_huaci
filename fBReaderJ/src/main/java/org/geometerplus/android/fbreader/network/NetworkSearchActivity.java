@@ -24,6 +24,7 @@ import android.app.SearchManager;
 import android.os.Bundle;
 import android.content.Intent;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.util.MimeType;
 
 import org.geometerplus.fbreader.network.NetworkLibrary;
@@ -41,7 +42,7 @@ public class NetworkSearchActivity extends Activity {
 	public void onCreate(Bundle icicle) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 
 		super.onCreate(icicle);

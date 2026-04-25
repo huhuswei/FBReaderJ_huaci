@@ -19,6 +19,7 @@
 
 package org.geometerplus.android.fbreader.preferences;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.preference.Preference;
 import android.view.View;
@@ -26,11 +27,13 @@ import android.widget.TextView;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.util.ZLColor;
 
 import org.geometerplus.zlibrary.ui.android.R;
 import org.geometerplus.zlibrary.ui.android.util.ZLAndroidColorUtil;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public abstract class ColorPreference extends Preference {
 	protected ColorPreference(Context context) {
@@ -54,7 +57,7 @@ public abstract class ColorPreference extends Preference {
 
 	@Override
 	protected void onClick() {
-		new AmbilWarnaDialog(
+		Dialog dialog = new AmbilWarnaDialog(
 			getContext(),
 			ZLAndroidColorUtil.rgb(getSavedColor()),
 			new AmbilWarnaDialog.OnAmbilWarnaListener() {
@@ -70,6 +73,10 @@ public abstract class ColorPreference extends Preference {
 				@Override
 				public void onCancel(AmbilWarnaDialog dialog) {
 				}
-			}).show();
+			}).getDialog();
+		dialog.show();
+
+		// 应用水墨屏主题到颜色选择对话框
+		InkThemeUtil.applyInkThemeToDialog(dialog, getContext());
 	}
 }

@@ -80,7 +80,7 @@ public class BookmarksActivity extends Activity implements IBookCollection.Liste
 		final ZLAndroidLibrary zlibrary = getZLibrary(this);
 		final boolean inkTheme = zlibrary.InkThemeOption.getValue();
 		if (inkTheme) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 
 		super.onCreate(bundle);

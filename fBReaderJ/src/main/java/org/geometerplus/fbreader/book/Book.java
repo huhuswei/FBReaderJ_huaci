@@ -30,6 +30,21 @@ public final class Book extends AbstractBook {
 		myPath = path;
 	}
 
+	/**
+	 * 从外部插件书籍信息创建Book对象（用于recent列表显示）
+	 * @param title 书籍标题
+	 * @param filePath 文件路径（可选）
+	 * @param hash 书籍Hash（可选，用于识别）
+	 */
+	public static Book fromExternalBook(String title, String filePath, String hash) {
+		if (title == null) {
+			return null;
+		}
+		// 使用Hash或文件路径作为唯一标识
+		String path = filePath != null ? filePath : (hash != null ? hash : "external:" + title);
+		return new Book(0, path, title, null, null);
+	}
+
 	@Override
 	public String getPath() {
 		return myPath;

@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 
+import org.geometerplus.fbreader.Paths;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.ui.android.R;
 import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
@@ -49,7 +50,7 @@ public class FolderListDialogActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 
 		super.onCreate(savedInstanceState);
@@ -181,7 +182,7 @@ public class FolderListDialogActivity extends ListActivity {
 				FolderListDialogActivity.this,
 				position,
 				myChooserTitle,
-				position == 0 ? "/" : myFolderList.get(position - 1),
+				position == 0 ? Paths.cardDirectory() : myFolderList.get(position - 1),
 				myChooseWritableDirectoriesOnly
 			);
 		}

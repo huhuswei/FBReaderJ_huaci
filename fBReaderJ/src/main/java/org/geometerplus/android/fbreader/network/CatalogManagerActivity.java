@@ -29,6 +29,7 @@ import android.widget.*;
 
 import com.mobeta.android.dslv.DragSortListView;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.ui.android.R;
 import org.geometerplus.fbreader.network.*;
 import org.geometerplus.android.fbreader.FBReader;
@@ -48,7 +49,7 @@ public class CatalogManagerActivity extends ListActivity {
 	protected void onCreate(Bundle icicle) {
 		final ZLAndroidLibrary zlibrary = (ZLAndroidLibrary)ZLAndroidLibrary.Instance();
 		if (zlibrary.InkThemeOption.getValue()) {
-			setTheme(R.style.FBReader_Activity_Ink);
+			InkThemeUtil.applyInkThemeToActivity(this);
 		}
 		super.onCreate(icicle);
 		setContentView(R.layout.catalog_manager_view);

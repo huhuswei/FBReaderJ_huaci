@@ -10,4 +10,13 @@
 
     <color name="afc_border_line_dark">#33B5E5</color>
 
+    <!-- ==================== 水墨屏主题颜色 ==================== -->
+    <color name="afc_ink_background">#ffffffff</color>
+    <color name="afc_ink_background_dark">#ffdddddd</color>
+    <color name="afc_ink_text">#ff000000</color>
+    <color name="afc_ink_text_secondary">#ff444444</color>
+    <color name="afc_ink_primary">#88444444</color>
+    <color name="afc_ink_divider">#ff808080</color>
+    <color name="afc_ink_icon">#ff555555</color>
+
 </resources>

@@ -20,13 +20,20 @@
 package org.geometerplus.android.fbreader.preferences;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
+import android.widget.TextView;
 
 import org.geometerplus.zlibrary.core.options.ZLIntegerRangeOption;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 class ZLIntegerRangePreference extends DialogPreference {
 	private final ZLIntegerRangeOption myOption;
@@ -38,6 +45,16 @@ class ZLIntegerRangePreference extends DialogPreference {
 		setTitle(resource.getValue());
 		updateSummary();
 		setDialogLayoutResource(R.layout.picker_preference);
+	}
+
+	@Override
+	protected void showDialog(Bundle state) {
+		super.showDialog(state);
+		// 使用通用方法应用水墨屏主题
+		android.app.Dialog dialog = getDialog();
+		if (dialog != null) {
+			ZLPreferenceActivity.applyInkThemeToDialog(dialog, getContext());
+		}
 	}
 
 	@Override

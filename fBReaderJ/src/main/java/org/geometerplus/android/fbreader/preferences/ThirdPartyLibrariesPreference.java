@@ -30,6 +30,8 @@ import android.widget.TextView;
 
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 class ThirdPartyLibrariesPreference extends DialogPreference {
 	ThirdPartyLibrariesPreference(Context context, ZLResource resource, String key) {
@@ -38,6 +40,16 @@ class ThirdPartyLibrariesPreference extends DialogPreference {
 		setTitle(resource.getResource(key).getValue());
 		setNegativeButtonText(null);
 		setPositiveButtonText(ZLResource.resource("dialog").getResource("button").getResource("ok").getValue());
+
+		// 水墨屏主题：设置对话框样式
+		try {
+			ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+			if (zlibrary != null && zlibrary.InkThemeOption.getValue()) {
+				setDialogLayoutResource(R.layout.preference_ink_item);
+			}
+		} catch (Exception e) {
+			// 忽略
+		}
 	}
 
 	@Override
@@ -58,6 +70,13 @@ class ThirdPartyLibrariesPreference extends DialogPreference {
 		textView.setText(Html.fromHtml(html.toString()));
 		textView.setPadding(10, 10, 10, 10);
 		textView.setMovementMethod(new LinkMovementMethod());
+
+		// 使用通用方法应用水墨屏主题
+		android.app.Dialog dialog = getDialog();
+		if (dialog != null) {
+			ZLPreferenceActivity.applyInkThemeToDialog(dialog, getContext());
+		}
+
 		return textView;
 	}
 }

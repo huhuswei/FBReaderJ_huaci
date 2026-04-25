@@ -309,6 +309,13 @@ public class FileChooserActivity extends Activity {
          * THEME
          */
 
+        // 水墨屏主题支持 - 通过SharedPreferences检测
+        boolean isInkTheme = getSharedPreferences("org.geometerplus.zlibrary.ui.android", Context.MODE_PRIVATE)
+                .getBoolean("inkTheme", false);
+        if (isInkTheme) {
+            setTheme(R.style.afc_Activity_Ink);
+        }
+
         /*
         if (getIntent().hasExtra(_Theme)) {
             int theme;

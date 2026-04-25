@@ -25,8 +25,11 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.view.Window;
 
+import org.geometerplus.android.util.InkThemeUtil;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.util.ZLColor;
+import org.geometerplus.zlibrary.ui.android.R;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.fbreader.book.BookmarkUtil;
 import org.geometerplus.fbreader.book.HighlightingStyle;
@@ -44,6 +47,12 @@ public class EditStyleActivity extends PreferenceActivity {
 
 	@Override
 	protected void onCreate(Bundle bundle) {
+		// 水墨屏主题支持
+		ZLAndroidLibrary zlibrary = (ZLAndroidLibrary) ZLAndroidLibrary.Instance();
+		if (zlibrary.InkThemeOption.getValue()) {
+			InkThemeUtil.applyInkThemeToActivity(this);
+		}
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		super.onCreate(bundle);

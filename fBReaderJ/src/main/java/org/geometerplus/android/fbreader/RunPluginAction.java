@@ -22,17 +22,28 @@ package org.geometerplus.android.fbreader;
 import android.content.Intent;
 import android.content.ActivityNotFoundException;
 import android.net.Uri;
+import android.util.Log;
 
 import org.geometerplus.fbreader.fbreader.FBReaderApp;
+import org.geometerplus.fbreader.book.Book;
 
 import org.geometerplus.android.fbreader.api.PluginApi;
+import org.geometerplus.android.fbreader.api.FBReaderIntents;
 
 class RunPluginAction extends FBAndroidAction {
 	private final Uri myUri;
+	private final Book myBook;
 
 	RunPluginAction(FBReader baseActivity, FBReaderApp fbreader, Uri uri) {
 		super(baseActivity, fbreader);
 		myUri = uri;
+		myBook = null;
+	}
+
+	RunPluginAction(FBReader baseActivity, FBReaderApp fbreader, Uri uri, Book book) {
+		super(baseActivity, fbreader);
+		myUri = uri;
+		myBook = book;
 	}
 
 	@Override
@@ -42,10 +53,19 @@ class RunPluginAction extends FBAndroidAction {
 		}
 		BaseActivity.hideBars();
 		try {
-			OrientationUtil.startActivity(
-				BaseActivity, new Intent(PluginApi.ACTION_RUN, myUri)
-			);
+			Intent intent = new Intent(PluginApi.ACTION_RUN, myUri);
+			// 传递书籍信息给插件，以便插件显示和保存进度
+			if (myBook != null) {
+				intent.putExtra(FBReaderIntents.Key.PLUGIN_BOOK_TITLE, myBook.getTitle());
+				intent.putExtra(FBReaderIntents.Key.PLUGIN_BOOK_FILE, myBook.getPath());
+				intent.putExtra(FBReaderIntents.Key.PLUGIN_BOOK, myBook.getId());
+				Log.d("RunPluginAction", "Sending book info to plugin: " + myBook.getTitle() + ", id=" + myBook.getId());
+			}
+			// 不使用startActivityForResult，因为大多数插件不会返回结果
+			// 书籍已经在FBReader中提前添加到recent列表了
+			OrientationUtil.startActivity(BaseActivity, intent);
 		} catch (ActivityNotFoundException e) {
+			Log.e("RunPluginAction", "Plugin not found for URI: " + myUri);
 		}
 	}
 }
